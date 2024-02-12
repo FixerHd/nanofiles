@@ -62,7 +62,7 @@ public class DirectoryConnector {
 		 * directorio
 		 */
 
-
+		socket=new DatagramSocket();
 
 	}
 
@@ -71,8 +71,9 @@ public class DirectoryConnector {
 	 * 
 	 * @param requestData los datos a enviar al directorio (mensaje de solicitud)
 	 * @return los datos recibidos del directorio (mensaje de respuesta)
+	 * @throws IOException 
 	 */
-	private byte[] sendAndReceiveDatagrams(byte[] requestData) {
+	private byte[] sendAndReceiveDatagrams(byte[] requestData) throws IOException {
 		byte responseData[] = new byte[DirMessage.PACKET_MAX_SIZE];
 		byte response[] = null;
 		if (directoryAddress == null) {
@@ -93,6 +94,9 @@ public class DirectoryConnector {
 		 * array devuelto debe contener únicamente los datos recibidos, *NO* el búfer de
 		 * recepción al completo.
 		 */
+		InetSocketAddress addr = new InetSocketAddress(DIRECTORY_PORT);
+				 DatagramPacket packet = new DatagramPacket(requestData, requestData.length, addr);
+				 socket.send(packet);
 		/*
 		 * TODO: Una vez el envío y recepción asumiendo un canal confiable (sin
 		 * pérdidas) esté terminado y probado, debe implementarse un mecanismo de
