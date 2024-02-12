@@ -120,7 +120,7 @@ public class NFCommands {
 	 * Imprime la lista de comandos y la ayuda de cada uno
 	 */
 	public static void printCommandsHelp() {
-		System.out.println("List of commands::");
+		System.out.println("List of commands:");
 		for (int i = 0; i < _valid_user_commands_str.length; i++) {
 			System.out.println(String.format("%1$15s", _valid_user_commands_str[i]) + " -- "
 					+ _valid_user_commands_help[i]);
