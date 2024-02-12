@@ -65,11 +65,14 @@ public class NFDirectoryServer {
 		 * ligado al puerto especificado por el argumento directoryPort en la máquina
 		 * local,
 		 */
+		socket = new DatagramSocket(DIRECTORY_PORT);
+		
 		/*
 		 * TODO: (Boletín UDP) Inicializar el resto de atributos de esta clase
 		 * (estructuras de datos que mantiene el servidor: nicks, sessionKeys, etc.)
 		 */
-
+		nicks = new HashMap<>();
+		sessionKeys = new HashMap<>();
 
 
 		if (NanoFiles.testMode) {
@@ -89,23 +92,22 @@ public class NFDirectoryServer {
 		 * TODO: (Boletín UDP) Crear un búfer para recibir datagramas y un datagrama
 		 * asociado al búfer
 		 */
-
-
-
-
+		receptionBuffer = new byte[32];
+		DatagramPacket paqueteDeCliente = new DatagramPacket(receptionBuffer, receptionBuffer.length);
 		System.out.println("Directory starting...");
 
 		while (true) { // Bucle principal del servidor de directorio
 
 			// TODO: (Boletín UDP) Recibimos a través del socket un datagrama
 
+			socket.receive(paqueteDeCliente);
 			// TODO: (Boletín UDP) Establecemos dataLength con longitud del datagrama
 			// recibido
-
+			dataLength=paqueteDeCliente.getLength();
 			// TODO: (Boletín UDP) Establecemos 'clientAddr' con la dirección del cliente,
 			// obtenida del
 			// datagrama recibido
-
+			clientAddr=(InetSocketAddress) paqueteDeCliente.getSocketAddress();
 
 
 
@@ -125,7 +127,7 @@ public class NFDirectoryServer {
 				 * TODO: (Boletín UDP) Construir una cadena a partir de los datos recibidos en
 				 * el buffer de recepción
 				 */
-
+				messageFromClient = new String(receptionBuffer, 0, paqueteDeCliente.getLength());
 
 
 
@@ -138,7 +140,15 @@ public class NFDirectoryServer {
 					 * cadena "loginok". Si el mensaje recibido no es "login", se informa del error
 					 * y no se envía ninguna respuesta.
 					 */
-
+					if (messageFromClient.equals("login")) {
+						String messageToClient = "loginok";
+						byte[] dataToClient = messageToClient.getBytes();
+						DatagramPacket paqueteACliente = new DatagramPacket(dataToClient, dataToClient.length, clientAddr);
+						socket.send(paqueteACliente);
+					} else {
+						System.out.println("Error. El mensaje recibido no es 'login'");
+						break;
+					}
 
 
 				} else { // Servidor funcionando en modo producción (mensajes bien formados)
@@ -156,6 +166,10 @@ public class NFDirectoryServer {
 					 * Después, usar la cadena para construir un objeto DirMessage que contenga en
 					 * sus atributos los valores del mensaje (fromString).
 					 */
+					
+					String datos = receptionBuffer.toString();
+					System.out.println(datos);
+					DirMessage cadena = new DirMessage(datos);
 					/*
 					 * TODO: Llamar a buildResponseFromRequest para construir, a partir del objeto
 					 * DirMessage con los valores del mensaje de petición recibido, un nuevo objeto
@@ -163,12 +177,16 @@ public class NFDirectoryServer {
 					 * DirMessage de respuesta deben haber sido establecidos con los valores
 					 * adecuados para los diferentes campos del mensaje (operation, etc.)
 					 */
+					
+					DirMessage mensaje = buildResponseFromRequest(cadena, clientAddr);
 					/*
 					 * TODO: Convertir en string el objeto DirMessage con el mensaje de respuesta a
 					 * enviar, extraer los bytes en que se codifica el string (getBytes), y
 					 * finalmente enviarlos en un datagrama
 					 */
-
+					
+					DatagramPacket paqueteEnviar = new DatagramPacket(mensaje.toString().getBytes(), mensaje.toString().getBytes().length); 
+					socket.send(paqueteEnviar);
 
 
 				}

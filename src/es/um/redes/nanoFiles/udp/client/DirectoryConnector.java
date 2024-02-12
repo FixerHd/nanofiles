@@ -51,19 +51,22 @@ public class DirectoryConnector {
 	private boolean successfulResponseStatus;
 	private String errorDescription;
 
-	public DirectoryConnector(String address) throws IOException {
+	public DirectoryConnector(String address) throws IOException {	
 		/*
 		 * TODO: Convertir el nombre de host 'address' a InetAddress y guardar la
 		 * dirección de socket (address:DIRECTORY_PORT) del directorio en el atributo
 		 * directoryAddress, para poder enviar datagramas a dicho destino.
 		 */
+		
 		/*
 		 * TODO: Crea el socket UDP en cualquier puerto para enviar datagramas al
 		 * directorio
 		 */
 
+		
+		InetAddress direccion = InetAddress.getByName(address);
+		directoryAddress = new InetSocketAddress(direccion, DIRECTORY_PORT);
 		socket=new DatagramSocket();
-
 	}
 
 	/**
@@ -94,22 +97,31 @@ public class DirectoryConnector {
 		 * array devuelto debe contener únicamente los datos recibidos, *NO* el búfer de
 		 * recepción al completo.
 		 */
-		InetSocketAddress addr = new InetSocketAddress(DIRECTORY_PORT);
-				 DatagramPacket packet = new DatagramPacket(requestData, requestData.length, addr);
-				 socket.send(packet);
-		/*
-		 * TODO: Una vez el envío y recepción asumiendo un canal confiable (sin
-		 * pérdidas) esté terminado y probado, debe implementarse un mecanismo de
-		 * retransmisión usando temporizador, en caso de que no se reciba respuesta en
-		 * el plazo de TIMEOUT. En caso de salte el timeout, se debe reintentar como
-		 * máximo en MAX_NUMBER_OF_ATTEMPTS ocasiones.
-		 */
+		//InetSocketAddress addr = new InetSocketAddress(DIRECTORY_PORT);
+		DatagramPacket packet = new DatagramPacket(requestData, requestData.length, directoryAddress);
+		socket.send(packet);
+		int intentos = 0;
+		while (intentos < MAX_NUMBER_OF_ATTEMPTS){
+			try{
+				socket.setSoTimeout(20000);
+				DatagramPacket receivePacket = new DatagramPacket(responseData, responseData.length);
+                socket.receive(receivePacket);
+				response = new byte[receivePacket.getLength()];
+                System.arraycopy(receivePacket.getData(), 0, response, 0, receivePacket.getLength());
+				break;
+			} catch (IOException e) {
+				intentos++;
+                System.err.println("Attempt " + intentos + ": " + e.getMessage());
+			}
+		}
+
 		/*
 		 * TODO: Las excepciones que puedan lanzarse al leer/escribir en el socket deben
 		 * ser capturadas y tratadas en este método. Si se produce una excepción de
 		 * entrada/salida (error del que no es posible recuperarse), se debe informar y
 		 * terminar el programa.
 		 */
+
 		/*
 		 * NOTA: Las excepciones deben tratarse de la más concreta a la más genérica.
 		 * SocketTimeoutException es más concreta que IOException.
@@ -138,6 +150,22 @@ public class DirectoryConnector {
 		 * no contiene los datos esperados.
 		 */
 		boolean success = false;
+		String mensaje = "login";
+		byte[] datos = mensaje.getBytes();
+		byte[] recibidos = null;
+		try {
+			recibidos = sendAndReceiveDatagrams(datos);
+		} catch (IOException e) {
+		
+		}
+		if (recibidos!=null) {
+			success = true;
+		}
+		String str1 = new String(recibidos);
+		if (str1.equals("loginok")) {
+			System.out.println("El mensaje recibido ha sido 'loginok'");
+		}
+		
 
 
 
