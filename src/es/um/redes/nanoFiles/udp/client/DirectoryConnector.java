@@ -57,15 +57,11 @@ public class DirectoryConnector {
 		 * dirección de socket (address:DIRECTORY_PORT) del directorio en el atributo
 		 * directoryAddress, para poder enviar datagramas a dicho destino.
 		 */
-		
+		 directoryAddress=new InetSocketAddress(InetAddress.getByName(address), DIRECTORY_PORT);		
 		/*
 		 * TODO: Crea el socket UDP en cualquier puerto para enviar datagramas al
 		 * directorio
 		 */
-
-		
-		InetAddress direccion = InetAddress.getByName(address);
-		directoryAddress = new InetSocketAddress(direccion, DIRECTORY_PORT);
 		socket=new DatagramSocket();
 	}
 
