@@ -63,8 +63,13 @@ public class NFControllerLogicDir {
 		 */
 		boolean result = false;
 
-
-
+		try {
+			directoryConnector = new DirectoryConnector(directoryHostname);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		result = directoryConnector.logIntoDirectory(nickname);
 		return result;
 	}
 

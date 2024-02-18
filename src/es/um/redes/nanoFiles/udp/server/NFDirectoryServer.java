@@ -159,7 +159,13 @@ public class NFDirectoryServer {
 						System.err.println("Directory DISCARDED datagram from " + clientAddr);
 						continue;
 					}
-
+					int num = random.nextInt(10000);
+					String data = "loginok&" + num;
+					System.out.println(data);
+					DirMessage cadena = new DirMessage(data);
+					DatagramPacket paqueteEnviar = new DatagramPacket(cadena.toString().getBytes(), cadena.toString().getBytes().length, clientAddr); 
+					socket.send(paqueteEnviar);
+					
 					/*
 					 * TODO: Construir String partir de los datos recibidos en el datagrama. A
 					 * continuación, imprimir por pantalla dicha cadena a modo de depuración.
@@ -167,9 +173,6 @@ public class NFDirectoryServer {
 					 * sus atributos los valores del mensaje (fromString).
 					 */
 					
-					String datos = receptionBuffer.toString();
-					System.out.println(datos);
-					DirMessage cadena = new DirMessage(datos);
 					/*
 					 * TODO: Llamar a buildResponseFromRequest para construir, a partir del objeto
 					 * DirMessage con los valores del mensaje de petición recibido, un nuevo objeto
@@ -178,16 +181,20 @@ public class NFDirectoryServer {
 					 * adecuados para los diferentes campos del mensaje (operation, etc.)
 					 */
 					
-					DirMessage mensaje = buildResponseFromRequest(cadena, clientAddr);
 					/*
 					 * TODO: Convertir en string el objeto DirMessage con el mensaje de respuesta a
 					 * enviar, extraer los bytes en que se codifica el string (getBytes), y
 					 * finalmente enviarlos en un datagrama
 					 */
 					
+					/*
+					String datos = new String(receptionBuffer);
+					System.out.println(datos);
+					DirMessage cadena = new DirMessage(datos);
+					DirMessage mensaje = buildResponseFromRequest(cadena, clientAddr);
 					DatagramPacket paqueteEnviar = new DatagramPacket(mensaje.toString().getBytes(), mensaje.toString().getBytes().length); 
 					socket.send(paqueteEnviar);
-
+						*/
 
 				}
 			} else {
@@ -221,6 +228,8 @@ public class NFDirectoryServer {
 			 * el nick y su sessionKey asociada. NOTA: Puedes usar random.nextInt(10000)
 			 * para generar la session key
 			 */
+			
+			
 			/*
 			 * TODO: Construimos un mensaje de respuesta que indique el éxito/fracaso del
 			 * login y contenga la sessionKey en caso de éxito, y lo devolvemos como
