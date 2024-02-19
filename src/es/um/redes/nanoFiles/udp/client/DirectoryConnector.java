@@ -207,7 +207,7 @@ public class DirectoryConnector {
 		} catch (IOException e) {
 			
 		}
-		//PRUEBA PARA VER SI SE SINCRONIZA CON ECLIPSE
+		//PRUEBA PARA VER SI SE SINCRONIZA CON ECLIPSE   
 		String str = new String(recibidos);
 		
 		
