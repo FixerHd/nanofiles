@@ -102,7 +102,7 @@ public class DirMessage {
 		DirMessage m = null;
 
 
-
+		/*
 		for (String line : lines) {
 			int idx = line.indexOf(DELIMITER); // Posición del delimitador
 			String fieldName = line.substring(0, idx).toLowerCase(); // minúsculas
@@ -114,20 +114,35 @@ public class DirMessage {
 				m = new DirMessage(value);
 				break;
 			}
-
-
-
-
 			default:
 				System.err.println("PANIC: DirMessage.fromString - message with unknown field name " + fieldName);
 				System.err.println("Message was:\n" + message);
 				System.exit(-1);
 			}
+			
+		}*/
+		
+		int idx = lines[0].indexOf(DELIMITER); // Posición del delimitador
+		int idx2 = lines[0].indexOf("&");
+		String fieldName = lines[0].substring(0, idx).toLowerCase(); // minúsculas
+		//String value = lines[0].substring(idx + 1).trim();
+		String value1 = lines[0].substring(idx + 1, idx2).trim();
+		String value2 = lines[0].substring(idx2 + 1).trim();
+		
+
+		switch (fieldName) {
+		case FIELDNAME_OPERATION: {
+			assert (m == null);
+			m = new DirMessage(value1);
+			m.setNickname(value2);
+			break;
 		}
-
-
-
-
+		default:
+			System.err.println("PANIC: DirMessage.fromString - message with unknown field name " + fieldName);
+			System.err.println("Message was:\n" + message);
+			System.exit(-1);
+		}
+		
 		return m;
 	}
 

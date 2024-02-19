@@ -159,12 +159,15 @@ public class NFDirectoryServer {
 						System.err.println("Directory DISCARDED datagram from " + clientAddr);
 						continue;
 					}
+					/*
 					int num = random.nextInt(10000);
-					String data = "loginok&" + num;
-					System.out.println(data);
-					DirMessage cadena = new DirMessage(data);
-					DatagramPacket paqueteEnviar = new DatagramPacket(cadena.toString().getBytes(), cadena.toString().getBytes().length, clientAddr); 
+					String mensajeACliente = "loginok&" + num;
+					System.out.println(mensajeACliente);
+					byte[] datosACliente = mensajeACliente.getBytes();
+					//DirMessage cadena = new DirMessage(mensajeACliente);
+					DatagramPacket paqueteEnviar = new DatagramPacket(datosACliente, datosACliente.length, clientAddr); 
 					socket.send(paqueteEnviar);
+					*/
 					
 					/*
 					 * TODO: Construir String partir de los datos recibidos en el datagrama. A
@@ -187,14 +190,14 @@ public class NFDirectoryServer {
 					 * finalmente enviarlos en un datagrama
 					 */
 					
-					/*
+					
 					String datos = new String(receptionBuffer);
 					System.out.println(datos);
-					DirMessage cadena = new DirMessage(datos);
+					DirMessage cadena = DirMessage.fromString(datos);
 					DirMessage mensaje = buildResponseFromRequest(cadena, clientAddr);
-					DatagramPacket paqueteEnviar = new DatagramPacket(mensaje.toString().getBytes(), mensaje.toString().getBytes().length); 
+					DatagramPacket paqueteEnviar = new DatagramPacket(mensaje.toString().getBytes(), mensaje.toString().getBytes().length, clientAddr); 
 					socket.send(paqueteEnviar);
-						*/
+						
 
 				}
 			} else {
@@ -221,6 +224,8 @@ public class NFDirectoryServer {
 		switch (operation) {
 		case DirMessageOps.OPERATION_LOGIN: {
 			String username = msg.getNickname();
+			int sessionkey = -1;
+			String mensajeACliente;
 
 			/*
 			 * TODO: Comprobamos si tenemos dicho usuario registrado (atributo "nicks"). Si
@@ -229,20 +234,32 @@ public class NFDirectoryServer {
 			 * para generar la session key
 			 */
 			
+			if(!nicks.keySet().contains(username)) {
+				sessionkey = random.nextInt(10000);
+				nicks.put(username, sessionkey);
+				mensajeACliente = "loginok&" + sessionkey;
+				System.out.println(mensajeACliente);
+				response = new DirMessage(mensajeACliente);
+			} else {
+				mensajeACliente = "login_failed:-1";
+				response = new DirMessage(mensajeACliente);
+			}
 			
 			/*
 			 * TODO: Construimos un mensaje de respuesta que indique el éxito/fracaso del
 			 * login y contenga la sessionKey en caso de éxito, y lo devolvemos como
 			 * resultado del método.
 			 */
+			
+			
+			
+			
 			/*
 			 * TODO: Imprimimos por pantalla el resultado de procesar la petición recibida
 			 * (éxito o fracaso) con los datos relevantes, a modo de depuración en el
 			 * servidor
 			 */
-
-
-
+			System.out.println(response.toString());
 			break;
 		}
 

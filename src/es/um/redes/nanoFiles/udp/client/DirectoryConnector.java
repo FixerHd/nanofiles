@@ -204,16 +204,32 @@ public class DirectoryConnector {
 		byte[] recibidos = null;
 		try {
 			recibidos = sendAndReceiveDatagrams(datos);
-			DirMessage rcbd = DirMessage.fromString(recibidos.toString());
 		} catch (IOException e) {
 			
 		}
 		
+		String str = new String(recibidos);
 		
 		
+		String[] lineas = str.split(":");
+		String[] lineas2 = lineas[1].split("&");
 
+		System.out.println(str);
+		if(!lineas2[0].equals("loginok")) {
+			return success;
+		}
+		
+		if(lineas2[0].equals("loginok") && recibidos!=null) {
+			success = true;
+			System.out.println("El mensaje recibido es " + lineas2[0] + lineas2[1].replaceAll("(\n|\r)", ""));
+		} else {
+			System.out.println("El mensaje recibido no es 'loginok'");
+			return success;
 
-
+		}
+		sessionKey = Integer.parseInt(lineas2[1].replaceAll("(\n|\r)", ""));
+		System.out.println(sessionKey);
+		//DirMessage rcbd = DirMessage.fromString(str);
 		return success;
 	}
 
