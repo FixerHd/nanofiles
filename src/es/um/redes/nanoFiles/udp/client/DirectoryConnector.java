@@ -154,7 +154,7 @@ public class DirectoryConnector {
 		} catch (IOException e) {
 		
 		}
-		if (recibidos!=null) {
+		if (recibidos != null) {
 			success = true;
 		}
 		String str1 = new String(recibidos);
