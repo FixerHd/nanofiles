@@ -28,7 +28,7 @@ public class NanoFiles {
 
 		db = new FileDatabase(sharedDirname);
 
-		// Creamos el controlador que aceptará y procesará los comandos
+		// Creamos el controlador que aceptará y procesará los comandos.
 		NFController controller = new NFController();
 		// Entramos en el bucle para pedirle al controlador que procese comandos del
 		// shell hasta que el usuario quiera salir de la aplicación.
