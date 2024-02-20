@@ -42,6 +42,8 @@ public class DirMessage {
 	 * diferentes mensajes de este protocolo.
 	 */
 	private String nickname;
+	
+	private int sessionkey;
 
 
 
@@ -74,6 +76,20 @@ public class DirMessage {
 
 
 		return nickname;
+	}
+	
+	public void setSessionkey(String num) {
+
+
+
+		sessionkey = num.indexOf(num);
+	}
+
+	public String getSessionkey() {
+
+
+
+		return  Integer.toString(sessionkey);
 	}
 
 
@@ -125,6 +141,7 @@ public class DirMessage {
 		int idx = lines[0].indexOf(DELIMITER); // Posición del delimitador
 		int idx2 = lines[0].indexOf("&");
 		String fieldName = lines[0].substring(0, idx).toLowerCase(); // minúsculas
+		System.out.print(fieldName);
 		//String value = lines[0].substring(idx + 1).trim();
 		String value1 = lines[0].substring(idx + 1, idx2).trim();
 		String value2 = lines[0].substring(idx2 + 1).trim();
@@ -133,9 +150,23 @@ public class DirMessage {
 		switch (fieldName) {
 		case FIELDNAME_OPERATION: {
 			assert (m == null);
-			m = new DirMessage(value1);
-			m.setNickname(value2);
-			break;
+			switch(value1) {
+			
+				case DirMessageOps.OPERATION_LOGIN:
+				{
+					m = new DirMessage(value1);
+					m.setNickname(value2);
+					break;
+				}
+				case DirMessageOps.OPERATION_LOGINOK:
+				{
+					m = new DirMessage(value1);
+					m.setSessionkey(value2);
+					break;
+				}
+				default:
+					break;
+			}
 		}
 		default:
 			System.err.println("PANIC: DirMessage.fromString - message with unknown field name " + fieldName);
@@ -156,15 +187,31 @@ public class DirMessage {
 	public String toString() {
 
 		StringBuffer sb = new StringBuffer();
-		sb.append(FIELDNAME_OPERATION + DELIMITER + operation + END_LINE); // Construimos el campo
+		
 		/*
 		 * TODO: En función del tipo de mensaje, crear una cadena con el tipo y
 		 * concatenar el resto de campos necesarios usando los valores de los atributos
 		 * del objeto.
 		 */
-
-
-
+		String s = null;
+		switch(operation) {
+			case DirMessageOps.OPERATION_LOGIN:
+			{
+				s = operation + "&" + nickname;
+				break;
+				
+			}
+			case DirMessageOps.OPERATION_LOGINOK:
+			{
+				s = operation + "&" + getSessionkey();
+				break;
+				
+			}
+			default:
+				break;
+		}
+				
+		sb.append(FIELDNAME_OPERATION + DELIMITER + s); // Construimos el campo
 		sb.append(END_LINE); // Marcamos el final del mensaje
 		return sb.toString();
 	}

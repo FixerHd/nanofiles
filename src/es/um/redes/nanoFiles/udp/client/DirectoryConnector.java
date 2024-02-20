@@ -198,7 +198,7 @@ public class DirectoryConnector {
 		// TODO: 6.Extraer datos del objeto DirMessage y procesarlos (p.ej., sessionKey)
 		// TODO: 7.Devolver éxito/fracaso de la operación
 		
-		DirMessage msg = new DirMessage(DirMessageOps.OPERATION_LOGIN + "&" + nickname);
+		DirMessage msg = DirMessage.fromString("operation:" + DirMessageOps.OPERATION_LOGIN + "&" + nickname);
 		String mensaje = msg.toString();
 		byte[] datos = mensaje.getBytes();
 		byte[] recibidos = null;
@@ -209,27 +209,26 @@ public class DirectoryConnector {
 		}
 		//PRUEBA PARA VER SI SE SINCRONIZA CON ECLIPSE   
 		String str = new String(recibidos);
+		DirMessage rcbd = DirMessage.fromString(str);
 		
-		
-		String[] lineas = str.split(":");
-		String[] lineas2 = lineas[1].split("&");
+		String op = rcbd.getOperation();
 
 		System.out.println(str);
-		if(!lineas2[0].equals("loginok")) {
+		if(!op.equals("loginok")) {
 			return success;
 		}
 		
-		if(lineas2[0].equals("loginok") && recibidos!=null) {
+		if(op.equals("loginok") && recibidos!=null) {
 			success = true;
-			System.out.println("El mensaje recibido es " + lineas2[0] + lineas2[1].replaceAll("(\n|\r)", ""));
+			String val = rcbd.getSessionkey();
+			System.out.println("El mensaje recibido es " + op + val);
 		} else {
 			System.out.println("El mensaje recibido no es 'loginok'");
 			return success;
 
 		}
-		sessionKey = Integer.parseInt(lineas2[1].replaceAll("(\n|\r)", ""));
+		
 		System.out.println(sessionKey);
-		//DirMessage rcbd = DirMessage.fromString(str);
 		return success;
 	}
 

@@ -232,12 +232,14 @@ public class NFController {
 			commandAllowed = true;
 			break;
 		}
+		
 		case NFCommands.COM_LOGIN:
 			if (currentState != LOGGED_OUT) {
 				commandAllowed = false;
 				System.err.println("* You cannot login because you are not logged out from the directory");
 			}
 			break;
+		
 
 
 
