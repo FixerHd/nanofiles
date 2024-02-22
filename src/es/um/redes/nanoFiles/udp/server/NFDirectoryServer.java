@@ -6,8 +6,10 @@ import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.Set;
 
 import es.um.redes.nanoFiles.application.NanoFiles;
 import es.um.redes.nanoFiles.udp.message.DirMessage;
@@ -236,6 +238,7 @@ public class NFDirectoryServer {
 			if(!nicks.keySet().contains(username)) {
 				sessionkey = random.nextInt(10000);
 				nicks.put(username, sessionkey);
+				sessionKeys.put(sessionkey, username);
 				mensajeACliente = "loginok:" + sessionkey;
 				System.out.println(mensajeACliente);
 				response = DirMessage.fromString(mensajeACliente);
@@ -261,6 +264,24 @@ public class NFDirectoryServer {
 			System.out.println(response.toString());
 			break;
 		}
+		
+		case DirMessageOps.OPERATION_USERLIST: {
+			String mensajeACliente = "";
+			Set <String> conjunto_nicks = new HashSet<>();
+			if(nicks.isEmpty()) {
+				mensajeACliente = "userlist_failed:-1";
+				response = new DirMessage(mensajeACliente);
+			}else {
+				conjunto_nicks = nicks.keySet();
+				for(String s : conjunto_nicks) {
+					mensajeACliente += s + "\n";
+				}
+				System.out.println(mensajeACliente);
+				response = DirMessage.fromString(DirMessageOps.OPERATION_USERLISTOK + ":" + mensajeACliente);
+			}
+			break;
+		}
+
 
 
 

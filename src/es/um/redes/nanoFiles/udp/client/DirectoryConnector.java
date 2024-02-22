@@ -99,7 +99,7 @@ public class DirectoryConnector {
 		int intentos = 0;
 		while (intentos < MAX_NUMBER_OF_ATTEMPTS){
 			try{
-				socket.setSoTimeout(20000);
+				socket.setSoTimeout(100000);
 				DatagramPacket receivePacket = new DatagramPacket(responseData, responseData.length);
                 socket.receive(receivePacket);
 				response = new byte[receivePacket.getLength()];
@@ -214,9 +214,9 @@ public class DirectoryConnector {
 		String op = rcbd.getOperation();
 
 		System.out.println(str);
-		if(!op.equals("loginok")) {
+		/*if(!op.equals("loginok")) {
 			return success;
-		}
+		}*/
 		String val;
 		
 		if(op.equals("loginok") && recibidos!=null) {
@@ -245,6 +245,27 @@ public class DirectoryConnector {
 	public String[] getUserList() {
 		String[] userlist = null;
 		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
+		DirMessage msg = DirMessage.fromString(DirMessageOps.OPERATION_USERLIST + ":" + sessionKey);
+		String mensaje = msg.toString();
+		byte[] datos = mensaje.getBytes();
+		byte[] recibidos = null;
+		try {
+			recibidos = sendAndReceiveDatagrams(datos);
+		} catch (IOException e) {
+			
+		}
+		String str = new String(recibidos);
+		DirMessage rcbd = DirMessage.fromString(str);
+		String op = rcbd.getOperation();
+		if(op.equals("userlistok") && recibidos!=null) {
+			System.out.println(rcbd.getNicks());
+		}
+		if(str.equals("userlist_failed:-1")){
+			return userlist;
+		}else {
+			
+		}
+		
 
 
 

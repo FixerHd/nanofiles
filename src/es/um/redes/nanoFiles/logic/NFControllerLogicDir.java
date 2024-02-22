@@ -100,10 +100,19 @@ public class NFControllerLogicDir {
 		 * e imprimirla por pantalla. Devolver éxito/fracaso de la operación.
 		 */
 		boolean result = false;
-
-
-
+		String[] array = directoryConnector.getUserList();
+		if(array == null) {
+			return result;
+			
+		}
+		result = true;
+		
+		for(int i = 0; i<array.length; i++) {
+			System.out.println(array[i]);
+		}
+		
 		return result;
+
 	}
 
 	/**

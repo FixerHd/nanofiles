@@ -11,6 +11,8 @@ public class DirMessageOps {
 	public static final String OPERATION_LOGINOK = "loginok";
 	public static final String OPERATION_LOGOUT = "logout";
 	public static final String OPERATION_USERLIST = "userlist";
+	public static final String OPERATION_USERLISTOK = "userlistok";
+	public static final String OPERATION_LOGOUTOK = "logoutok";
 
 
 

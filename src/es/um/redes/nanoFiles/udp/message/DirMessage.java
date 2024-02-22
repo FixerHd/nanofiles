@@ -44,7 +44,8 @@ public class DirMessage {
 	private String nickname;
 	
 	private int sessionkey;
-
+	
+	private String nicks;
 
 
 
@@ -173,6 +174,19 @@ public class DirMessage {
 					m.setSessionkey(value);
 					break;
 				}
+				case DirMessageOps.OPERATION_LOGOUTOK:
+				{
+					m = new DirMessage(field);
+					m.setSessionkey(value);
+					break;
+				}
+				case DirMessageOps.OPERATION_USERLISTOK:
+				{
+					m = new DirMessage(field);
+					m.setNicks(value);
+					
+					break;
+				}
 				default:
 				{
 					System.err.println("PANIC: DirMessage.fromString - message with unknown field name " + field);
@@ -227,6 +241,18 @@ public class DirMessage {
 				break;
 				
 			}
+			case DirMessageOps.OPERATION_LOGOUTOK:
+			{
+				s = operation + ":" + getSessionkey();
+				break;
+				
+			}
+			case DirMessageOps.OPERATION_USERLISTOK:
+			{
+				s = operation + ":" + getNicks();
+				break;
+				
+			}
 			default:
 				break;
 		}
@@ -234,5 +260,26 @@ public class DirMessage {
 		sb.append(s); // Construimos el campo
 		//sb.append(END_LINE); // Marcamos el final del mensaje
 		return sb.toString();
+	}
+
+
+
+
+	public static String getFieldnameOperation() {
+		return FIELDNAME_OPERATION;
+	}
+
+
+
+
+	public String getNicks() {
+		return nicks;
+	}
+
+
+
+
+	public void setNicks(String nicks) {
+		this.nicks = nicks;
 	}
 }
