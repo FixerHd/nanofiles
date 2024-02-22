@@ -264,6 +264,11 @@ public class NFController {
 			currentState = LOGGED_IN;
 			break;
 		}
+		
+		case NFCommands.COM_LOGOUT: {
+			currentState = LOGGED_OUT;
+			break;
+		}
 
 
 
