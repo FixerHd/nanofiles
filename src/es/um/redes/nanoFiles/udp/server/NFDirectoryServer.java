@@ -85,14 +85,13 @@ public class NFDirectoryServer {
 	}
 
 	public void run() throws IOException {
-		byte[] receptionBuffer = null;
+		byte[] receptionBuffer = new byte[32];
 		InetSocketAddress clientAddr = null;
 		int dataLength = -1;
 		/*
 		 * TODO: (Boletín UDP) Crear un búfer para recibir datagramas y un datagrama
 		 * asociado al búfer
 		 */
-		receptionBuffer = new byte[32];
 		DatagramPacket paqueteDeCliente = new DatagramPacket(receptionBuffer, receptionBuffer.length);
 		System.out.println("Directory starting...");
 
@@ -237,9 +236,9 @@ public class NFDirectoryServer {
 			if(!nicks.keySet().contains(username)) {
 				sessionkey = random.nextInt(10000);
 				nicks.put(username, sessionkey);
-				mensajeACliente = "loginok&" + sessionkey;
+				mensajeACliente = "loginok:" + sessionkey;
 				System.out.println(mensajeACliente);
-				response = new DirMessage(mensajeACliente);
+				response = DirMessage.fromString(mensajeACliente);
 			} else {
 				mensajeACliente = "login_failed:-1";
 				response = new DirMessage(mensajeACliente);

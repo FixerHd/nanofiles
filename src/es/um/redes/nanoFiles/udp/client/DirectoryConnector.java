@@ -198,7 +198,7 @@ public class DirectoryConnector {
 		// TODO: 6.Extraer datos del objeto DirMessage y procesarlos (p.ej., sessionKey)
 		// TODO: 7.Devolver éxito/fracaso de la operación
 		
-		DirMessage msg = DirMessage.fromString("operation:" + DirMessageOps.OPERATION_LOGIN + "&" + nickname);
+		DirMessage msg = DirMessage.fromString(DirMessageOps.OPERATION_LOGIN + ":" + nickname);
 		String mensaje = msg.toString();
 		byte[] datos = mensaje.getBytes();
 		byte[] recibidos = null;
@@ -217,11 +217,13 @@ public class DirectoryConnector {
 		if(!op.equals("loginok")) {
 			return success;
 		}
+		String val;
 		
 		if(op.equals("loginok") && recibidos!=null) {
 			success = true;
-			String val = rcbd.getSessionkey();
+			val = rcbd.getSessionkey();
 			System.out.println("El mensaje recibido es " + op + val);
+			sessionKey=Integer.parseInt(val);
 		} else {
 			System.out.println("El mensaje recibido no es 'loginok'");
 			return success;

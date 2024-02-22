@@ -82,7 +82,7 @@ public class DirMessage {
 
 
 
-		sessionkey = num.indexOf(num);
+		sessionkey = Integer.parseInt(num);
 	}
 
 	public String getSessionkey() {
@@ -91,7 +91,6 @@ public class DirMessage {
 
 		return  Integer.toString(sessionkey);
 	}
-
 
 
 
@@ -139,40 +138,49 @@ public class DirMessage {
 		}*/
 		
 		int idx = lines[0].indexOf(DELIMITER); // Posición del delimitador
-		int idx2 = lines[0].indexOf("&");
-		String fieldName = lines[0].substring(0, idx).toLowerCase(); // minúsculas
-		System.out.print(fieldName);
+		//int idx2 = lines[0].indexOf("&");
+		String field = lines[0].substring(0, idx).toLowerCase(); // minúsculas
+		System.out.println(field);
 		//String value = lines[0].substring(idx + 1).trim();
-		String value1 = lines[0].substring(idx + 1, idx2).trim();
-		String value2 = lines[0].substring(idx2 + 1).trim();
+		String value = lines[0].substring(idx + 1).trim();
+		//String value2 = lines[0].substring(idx2 + 1).trim();
 		
 
-		switch (fieldName) {
-		case FIELDNAME_OPERATION: {
 			assert (m == null);
-			switch(value1) {
+			switch(field) {
 			
 				case DirMessageOps.OPERATION_LOGIN:
 				{
-					m = new DirMessage(value1);
-					m.setNickname(value2);
+					m = new DirMessage(field);
+					m.setNickname(value);
 					break;
 				}
 				case DirMessageOps.OPERATION_LOGINOK:
 				{
-					m = new DirMessage(value1);
-					m.setSessionkey(value2);
+					m = new DirMessage(field);
+					m.setSessionkey(value);
+					break;
+				}
+				case DirMessageOps.OPERATION_LOGOUT:
+				{
+					m = new DirMessage(field);
+					m.setSessionkey(value);
+					break;
+				}
+				case DirMessageOps.OPERATION_USERLIST:
+				{
+					m = new DirMessage(field);
+					m.setSessionkey(value);
 					break;
 				}
 				default:
-					break;
+				{
+					System.err.println("PANIC: DirMessage.fromString - message with unknown field name " + field);
+					System.err.println("Message was:\n" + message);
+					System.exit(-1);
+				}
 			}
-		}
-		default:
-			System.err.println("PANIC: DirMessage.fromString - message with unknown field name " + fieldName);
-			System.err.println("Message was:\n" + message);
-			System.exit(-1);
-		}
+	
 		
 		return m;
 	}
@@ -197,13 +205,25 @@ public class DirMessage {
 		switch(operation) {
 			case DirMessageOps.OPERATION_LOGIN:
 			{
-				s = operation + "&" + nickname;
+				s = operation + ":" + nickname;
 				break;
 				
 			}
 			case DirMessageOps.OPERATION_LOGINOK:
 			{
-				s = operation + "&" + getSessionkey();
+				s = operation + ":" + getSessionkey();
+				break;
+				
+			}
+			case DirMessageOps.OPERATION_LOGOUT:
+			{
+				s = operation + ":" + getSessionkey();
+				break;
+				
+			}
+			case DirMessageOps.OPERATION_USERLIST:
+			{
+				s = operation + ":" + getSessionkey();
 				break;
 				
 			}
@@ -211,8 +231,8 @@ public class DirMessage {
 				break;
 		}
 				
-		sb.append(FIELDNAME_OPERATION + DELIMITER + s); // Construimos el campo
-		sb.append(END_LINE); // Marcamos el final del mensaje
+		sb.append(s); // Construimos el campo
+		//sb.append(END_LINE); // Marcamos el final del mensaje
 		return sb.toString();
 	}
 }
