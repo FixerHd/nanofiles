@@ -7,6 +7,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.Set;
@@ -87,18 +88,18 @@ public class NFDirectoryServer {
 	}
 
 	public void run() throws IOException {
-		byte[] receptionBuffer = new byte[32];
-		InetSocketAddress clientAddr = null;
-		int dataLength = -1;
-		/*
-		 * TODO: (Boletín UDP) Crear un búfer para recibir datagramas y un datagrama
-		 * asociado al búfer
-		 */
-		DatagramPacket paqueteDeCliente = new DatagramPacket(receptionBuffer, receptionBuffer.length);
+		
 		System.out.println("Directory starting...");
 
 		while (true) { // Bucle principal del servidor de directorio
-
+			byte[] receptionBuffer = new byte[32];
+			InetSocketAddress clientAddr = null;
+			int dataLength = -1;
+			/*
+			 * TODO: (Boletín UDP) Crear un búfer para recibir datagramas y un datagrama
+			 * asociado al búfer
+			 */
+			DatagramPacket paqueteDeCliente = new DatagramPacket(receptionBuffer, receptionBuffer.length);
 			// TODO: (Boletín UDP) Recibimos a través del socket un datagrama
 
 			socket.receive(paqueteDeCliente);
@@ -196,7 +197,9 @@ public class NFDirectoryServer {
 					System.out.println(datos);
 					DirMessage cadena = DirMessage.fromString(datos);
 					DirMessage mensaje = buildResponseFromRequest(cadena, clientAddr);
-					DatagramPacket paqueteEnviar = new DatagramPacket(mensaje.toString().getBytes(), mensaje.toString().getBytes().length, clientAddr); 
+					byte[] campo1 = mensaje.toString().getBytes();
+					int campo2 = mensaje.toString().getBytes().length;
+					DatagramPacket paqueteEnviar = new DatagramPacket(campo1, campo2, clientAddr); 
 					socket.send(paqueteEnviar);
 						
 
@@ -281,7 +284,25 @@ public class NFDirectoryServer {
 			}
 			break;
 		}
-
+		
+		case DirMessageOps.OPERATION_LOGOUT: {
+			System.out.println("En el mapa de nicks: " + nicks.keySet().size());
+			String sessionKey = msg.getSessionkey();
+			String username = msg.getNickname();
+			nicks.remove(username);
+			 Iterator<HashMap.Entry<String, Integer>> iter = nicks.entrySet().iterator();
+		        while (iter.hasNext()) {
+		            HashMap.Entry<String, Integer> entry = iter.next();
+		            if (entry.getValue().equals(Integer.parseInt(sessionKey))) {
+		                iter.remove();
+		                System.out.println("Se eliminó la entrada con clave '" + entry.getKey() + "' y valor '" + entry.getValue() + "'");
+		            }
+		        }
+	        System.out.println("En el mapa de nicks: " + nicks.keySet().size());
+			response = DirMessage.fromString(DirMessageOps.OPERATION_LOGOUTOK + ":" + sessionKey);
+			
+			break;
+		}
 
 
 

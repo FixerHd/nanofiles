@@ -113,7 +113,8 @@ public class DirMessage {
 
 		// System.out.println("DirMessage read from socket:");
 		// System.out.println(message);
-		String[] lines = message.split(END_LINE + "");
+		//String[] lines = message.split(END_LINE + "");
+		//String[] lines = null;
 		// Local variables to save data during parsing
 		DirMessage m = null;
 
@@ -138,13 +139,20 @@ public class DirMessage {
 			
 		}*/
 		
-		int idx = lines[0].indexOf(DELIMITER); // Posición del delimitador
+		/*int idx = lines[0].indexOf(DELIMITER); // Posición del delimitador
 		//int idx2 = lines[0].indexOf("&");
 		String field = lines[0].substring(0, idx).toLowerCase(); // minúsculas
 		System.out.println(field);
 		//String value = lines[0].substring(idx + 1).trim();
 		String value = lines[0].substring(idx + 1).trim();
-		//String value2 = lines[0].substring(idx2 + 1).trim();
+		//String value2 = lines[0].substring(idx2 + 1).trim();*/
+		
+		int idx = message.indexOf(DELIMITER); // Posición del delimitador
+		//int idx2 = lines[0].indexOf("&");
+		String field = message.substring(0, idx).toLowerCase(); // minúsculas
+		System.out.println(field);
+		//String value = lines[0].substring(idx + 1).trim();
+		String value = message.substring(idx + 1).trim();
 		
 
 			assert (m == null);

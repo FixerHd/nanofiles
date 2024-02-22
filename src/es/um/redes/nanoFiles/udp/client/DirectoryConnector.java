@@ -207,7 +207,6 @@ public class DirectoryConnector {
 		} catch (IOException e) {
 			
 		}
-		//PRUEBA PARA VER SI SE SINCRONIZA CON ECLIPSE   
 		String str = new String(recibidos);
 		DirMessage rcbd = DirMessage.fromString(str);
 		
@@ -279,10 +278,34 @@ public class DirectoryConnector {
 	 */
 	public boolean logoutFromDirectory() {
 		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
+		boolean success = false;
+		DirMessage msg = DirMessage.fromString(DirMessageOps.OPERATION_LOGOUT + ":" + sessionKey);
+		String mensaje = msg.toString();
+		byte[] datos = mensaje.getBytes();
+		byte[] recibidos = null;
+		try {
+			recibidos = sendAndReceiveDatagrams(datos);
+		} catch (IOException e) {
+			
+		}
+		String str = new String(recibidos);
+		DirMessage rcbd = DirMessage.fromString(str);
+		String op = rcbd.getOperation();
+		System.out.println(str);
+		String val;
+		if(op.equals("logoutok") && recibidos!=null) {
+			success = true;
+			val = rcbd.getSessionkey();
+			System.out.println("El mensaje recibido es " + op + val);
+			sessionKey=Integer.parseInt(val);
+		} else {
+			System.out.println("El mensaje recibido no es 'logoutok'");
+			return success;
+
+		}
 
 
-
-		return false;
+		return success;
 	}
 
 	/**

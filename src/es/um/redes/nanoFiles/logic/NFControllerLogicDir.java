@@ -84,7 +84,7 @@ public class NFControllerLogicDir {
 		 * identificarse. Devolver éxito/fracaso de la operación.
 		 */
 		boolean result = false;
-
+		result = directoryConnector.logoutFromDirectory();
 
 
 		return result;
