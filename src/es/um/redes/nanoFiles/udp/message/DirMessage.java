@@ -20,7 +20,7 @@ public class DirMessage {
 	public static final int PACKET_MAX_SIZE = 65507; // 65535 - 8 (UDP header) - 20 (IP header)
 
 	private static final char DELIMITER = ':'; // Define el delimitador
-	private static final char END_LINE = '\n'; // Define el carácter de fin de línea
+	//private static final char END_LINE = '\n'; // Define el carácter de fin de línea
 
 	/**
 	 * Nombre del campo que define el tipo de mensaje (primera línea)
@@ -149,8 +149,7 @@ public class DirMessage {
 		
 		int idx = message.indexOf(DELIMITER); // Posición del delimitador
 		//int idx2 = lines[0].indexOf("&");
-		String field = message.substring(0, idx).toLowerCase(); // minúsculas
-		System.out.println(field);
+		String field = message.substring(0, idx).toLowerCase(); // minúsculas;
 		//String value = lines[0].substring(idx + 1).trim();
 		String value = message.substring(idx + 1).trim();
 		

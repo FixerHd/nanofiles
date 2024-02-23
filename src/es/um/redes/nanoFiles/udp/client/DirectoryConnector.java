@@ -212,7 +212,6 @@ public class DirectoryConnector {
 		
 		String op = rcbd.getOperation();
 
-		System.out.println(str);
 		/*if(!op.equals("loginok")) {
 			return success;
 		}*/
@@ -221,15 +220,13 @@ public class DirectoryConnector {
 		if(op.equals("loginok") && recibidos!=null) {
 			success = true;
 			val = rcbd.getSessionkey();
-			System.out.println("El mensaje recibido es " + op + val);
+			System.out.println("Se ha hecho login éxitosamente y la clave de sesión es " + val);
 			sessionKey=Integer.parseInt(val);
 		} else {
 			System.out.println("El mensaje recibido no es 'loginok'");
 			return success;
 
 		}
-		
-		System.out.println(sessionKey);
 		return success;
 	}
 
@@ -291,12 +288,11 @@ public class DirectoryConnector {
 		String str = new String(recibidos);
 		DirMessage rcbd = DirMessage.fromString(str);
 		String op = rcbd.getOperation();
-		System.out.println(str);
 		String val;
 		if(op.equals("logoutok") && recibidos!=null) {
 			success = true;
 			val = rcbd.getSessionkey();
-			System.out.println("El mensaje recibido es " + op + val);
+			System.out.println("El logout se ha completado con éxito y se ha eliminado la clave " + val);
 			sessionKey=Integer.parseInt(val);
 		} else {
 			System.out.println("El mensaje recibido no es 'logoutok'");

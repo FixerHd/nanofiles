@@ -194,7 +194,6 @@ public class NFDirectoryServer {
 					
 					
 					String datos = new String(receptionBuffer);
-					System.out.println(datos);
 					DirMessage cadena = DirMessage.fromString(datos);
 					DirMessage mensaje = buildResponseFromRequest(cadena, clientAddr);
 					byte[] campo1 = mensaje.toString().getBytes();
@@ -243,7 +242,6 @@ public class NFDirectoryServer {
 				nicks.put(username, sessionkey);
 				sessionKeys.put(sessionkey, username);
 				mensajeACliente = "loginok:" + sessionkey;
-				System.out.println(mensajeACliente);
 				response = DirMessage.fromString(mensajeACliente);
 			} else {
 				mensajeACliente = "login_failed:-1";
@@ -264,7 +262,6 @@ public class NFDirectoryServer {
 			 * (éxito o fracaso) con los datos relevantes, a modo de depuración en el
 			 * servidor
 			 */
-			System.out.println(response.toString());
 			break;
 		}
 		
@@ -279,7 +276,6 @@ public class NFDirectoryServer {
 				for(String s : conjunto_nicks) {
 					mensajeACliente += s + "\n";
 				}
-				System.out.println(mensajeACliente);
 				response = DirMessage.fromString(DirMessageOps.OPERATION_USERLISTOK + ":" + mensajeACliente);
 			}
 			break;
