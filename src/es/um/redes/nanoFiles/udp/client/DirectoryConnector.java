@@ -240,6 +240,7 @@ public class DirectoryConnector {
 	 */
 	public String[] getUserList() {
 		String[] userlist = null;
+		assert (sessionKey != INVALID_SESSION_KEY);
 		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
 		DirMessage msg = DirMessage.fromString(DirMessageOps.OPERATION_USERLIST + ":" + sessionKey);
 		String mensaje = msg.toString();
@@ -275,6 +276,7 @@ public class DirectoryConnector {
 	 */
 	public boolean logoutFromDirectory() {
 		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
+		assert (sessionKey != INVALID_SESSION_KEY);
 		boolean success = false;
 		DirMessage msg = DirMessage.fromString(DirMessageOps.OPERATION_LOGOUT + ":" + sessionKey);
 		String mensaje = msg.toString();

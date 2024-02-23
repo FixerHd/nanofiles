@@ -84,6 +84,10 @@ public class NFControllerLogicDir {
 		 * identificarse. Devolver éxito/fracaso de la operación.
 		 */
 		boolean result = false;
+		if(directoryConnector == null) {
+			System.out.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			return result;
+		}
 		result = directoryConnector.logoutFromDirectory();
 
 
@@ -100,6 +104,10 @@ public class NFControllerLogicDir {
 		 * e imprimirla por pantalla. Devolver éxito/fracaso de la operación.
 		 */
 		boolean result = false;
+		if(directoryConnector == null) {
+			System.out.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			return result;
+		}
 		String[] array = directoryConnector.getUserList();
 		if(array == null) {
 			return result;
