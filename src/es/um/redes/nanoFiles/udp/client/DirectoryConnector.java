@@ -295,7 +295,8 @@ public class DirectoryConnector {
 			success = true;
 			val = rcbd.getSessionkey();
 			System.out.println("El logout se ha completado con éxito y se ha eliminado la clave " + val);
-			sessionKey=Integer.parseInt(val);
+			//sessionKey=Integer.parseInt(val);
+			sessionKey=INVALID_SESSION_KEY;
 		} else {
 			System.out.println("El mensaje recibido no es 'logoutok'");
 			return success;
