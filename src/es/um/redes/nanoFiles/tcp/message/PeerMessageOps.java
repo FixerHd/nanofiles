@@ -7,8 +7,13 @@ public class PeerMessageOps {
 
 	public static final byte OPCODE_INVALID_CODE = 0;
 
-
-
+	public static final byte OPCODE_DOWNLOAD = 1;
+	
+	public static final byte OPCODE_DOWNLOAD_FAIL = 2;
+	
+	public static final byte OPCODE_DOWNLOAD_RESPONSE_DATA = 3;
+	
+	public static final byte OPCODE_DOWNLOAD_RESPONSE_FAIL = 4;
 
 
 	/**
@@ -18,9 +23,10 @@ public class PeerMessageOps {
 	 */
 	private static final Byte[] _valid_opcodes = {
 			OPCODE_INVALID_CODE,
-
-
-
+			OPCODE_DOWNLOAD,
+			OPCODE_DOWNLOAD_FAIL,
+			OPCODE_DOWNLOAD_RESPONSE_DATA,
+			OPCODE_DOWNLOAD_RESPONSE_FAIL
 			};
 	private static final String[] _valid_operations_str = {
 			"INVALID_OPCODE",

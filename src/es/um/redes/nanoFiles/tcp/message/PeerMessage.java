@@ -19,12 +19,15 @@ public class PeerMessage {
 
 	private byte opcode;
 
+	private Integer longitud_hash;
+	
+	private byte[] hash;
+
 	/*
 	 * TODO: Añadir atributos y crear otros constructores específicos para crear
 	 * mensajes con otros campos (tipos de datos)
 	 * 
 	 */
-
 
 
 
@@ -35,6 +38,15 @@ public class PeerMessage {
 	public PeerMessage(byte op) {
 		opcode = op;
 	}
+	
+	public PeerMessage(byte op, int longitud, byte[] hash) {
+		opcode = op;
+		longitud_hash = longitud;
+		this.hash = hash;
+		
+	}
+
+	
 
 	/*
 	 * TODO: Crear métodos getter y setter para obtener valores de nuevos atributos,
@@ -44,7 +56,34 @@ public class PeerMessage {
 	public byte getOpcode() {
 		return opcode;
 	}
+	
+	public byte[] getHash() {
+        if (hash.length == 0) {
+            throw new IllegalStateException("El hash no ha sido establecido");
+        }
+        return hash;
+    }
 
+    public void setHash(byte[] hash) {
+        if (hash.length == 0) {
+            throw new IllegalArgumentException("El hash no puede ser nulo");
+        }
+        this.hash = hash;
+    }
+    
+    public int getLongitud() {
+        if (longitud_hash == null) {
+            throw new IllegalStateException("La longitud del hash no ha sido establecida");
+        }
+        return longitud_hash;
+    }
+
+    public void setLongitud(Integer longitud_hash) {
+        if (longitud_hash == null) {
+            throw new IllegalArgumentException("La longitud del hash no puede ser nula");
+        }
+        this.longitud_hash = longitud_hash;
+    }
 
 
 
@@ -69,7 +108,24 @@ public class PeerMessage {
 		PeerMessage message = new PeerMessage();
 		byte opcode = dis.readByte();
 		switch (opcode) {
+		case 1:{
+			int longitudDatos = dis.readInt();
+			byte[] datos = new byte[longitudDatos];
+			dis.readFully(datos);
+			break;
+		}
+		case 2:{
 
+			break;
+		}
+		case 3:{
+
+			break;
+		}
+		case 4:{
+
+			break;
+		}
 
 
 		default:
