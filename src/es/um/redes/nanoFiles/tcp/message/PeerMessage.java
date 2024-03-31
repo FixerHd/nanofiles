@@ -33,10 +33,14 @@ public class PeerMessage {
 
 	public PeerMessage() {
 		opcode = PeerMessageOps.OPCODE_INVALID_CODE;
+		longitud_hash = 0;
+		this.hash = new byte[longitud_hash];
 	}
 
 	public PeerMessage(byte op) {
 		opcode = op;
+		longitud_hash = 0;
+		this.hash = new byte[longitud_hash];
 	}
 	
 	public PeerMessage(byte op, int longitud, byte[] hash) {
@@ -108,22 +112,28 @@ public class PeerMessage {
 		PeerMessage message = new PeerMessage();
 		byte opcode = dis.readByte();
 		switch (opcode) {
-		case 1:{
+		case PeerMessageOps.OPCODE_DOWNLOAD:{
 			int longitudDatos = dis.readInt();
 			byte[] datos = new byte[longitudDatos];
 			dis.readFully(datos);
 			break;
 		}
-		case 2:{
-
+		case PeerMessageOps.OPCODE_DOWNLOAD_FAIL:{
+			int longitudDatos = dis.readInt();
+			byte[] datos = new byte[longitudDatos];
+			dis.readFully(datos);
 			break;
 		}
-		case 3:{
-
+		case PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_DATA:{
+			int longitudDatos = dis.readInt();
+			byte[] datos = new byte[longitudDatos];
+			dis.readFully(datos);
 			break;
 		}
-		case 4:{
-
+		case PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_FAIL:{
+			int longitudDatos = dis.readInt();
+			byte[] datos = new byte[longitudDatos];
+			dis.readFully(datos);
 			break;
 		}
 
@@ -146,6 +156,22 @@ public class PeerMessage {
 
 		dos.writeByte(opcode);
 		switch (opcode) {
+		case PeerMessageOps.OPCODE_DOWNLOAD:{
+			dos.writeInt(1);
+			break;
+		}
+		case PeerMessageOps.OPCODE_DOWNLOAD_FAIL:{
+			dos.writeInt(2);
+			break;
+		}
+		case PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_DATA:{
+			dos.writeInt(3);
+			break;
+		}
+		case PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_FAIL:{
+			dos.writeInt(4);
+			break;
+		}
 
 
 
