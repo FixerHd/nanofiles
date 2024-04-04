@@ -8,6 +8,9 @@ import java.net.InetSocketAddress;
 import java.util.LinkedList;
 import java.util.Random;
 
+import es.um.redes.nanoFiles.tcp.server.NFServer;
+import es.um.redes.nanoFiles.tcp.server.NFServerSimple;
+
 
 
 
@@ -17,17 +20,25 @@ public class NFControllerLogicP2P {
 	 * TODO: Para bgserve, se necesita un atributo NFServer que actuará como
 	 * servidor de ficheros en segundo plano de este peer
 	 */
-
-
+	
+	
+	NFServer servidor;
 
 
 	protected NFControllerLogicP2P() {
-	}
+        try {
+            servidor = new NFServer();
+        } catch (IOException e) {
+            System.out.println("Error al crear el servidor: " + e.getMessage());
+        }
+    }
+	
 
 	/**
 	 * Método para arrancar un servidor de ficheros en primer plano.
 	 * 
 	 */
+	
 	protected void foregroundServeFiles() {
 		/*
 		 * TODO: Crear objeto servidor NFServerSimple y ejecutarlo en primer plano.
@@ -38,7 +49,12 @@ public class NFControllerLogicP2P {
 		 * es posible recuperarse), se debe informar sin abortar el programa
 		 */
 
-
+		try {
+            NFServerSimple servidorSimple = new NFServerSimple();
+            servidorSimple.run(); //no se por qué no deja con el start
+        } catch (IOException e) {
+            System.out.println("Error al iniciar el servidor en primer plano: " + e.getMessage());
+        }
 
 	}
 
