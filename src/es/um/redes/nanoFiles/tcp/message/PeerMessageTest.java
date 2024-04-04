@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import es.um.redes.nanoFiles.util.FileInfo;
 public class PeerMessageTest {
 
 	public static void main(String[] args) throws IOException {
@@ -19,15 +20,10 @@ public class PeerMessageTest {
 		 * writeMessageToOutputStream para comprobar que readMessageFromInputStream
 		 * construye un mensaje idéntico al original.
 		 */
-		byte valor = 1;
-		System.out.println("hola");
-		PeerMessage msgOut = new PeerMessage(valor);
-		System.out.println("adios");
+		
+		PeerMessage msgOut = new PeerMessage(PeerMessageOps.OPCODE_DOWNLOAD, new FileInfo(null, nombreArchivo, 0, null));
 		msgOut.writeMessageToOutputStream(fos);
-		System.out.println("holaaa");
-
 		DataInputStream fis = new DataInputStream(new FileInputStream(nombreArchivo));
-		System.out.println("adiosss");
 		PeerMessage msgIn = PeerMessage.readMessageFromInputStream((DataInputStream) fis);
 		/*
 		 * TODO: Comprobar que coinciden los valores de los atributos relevantes al tipo
@@ -35,6 +31,8 @@ public class PeerMessageTest {
 		 */
 		if (msgOut.getOpcode() != msgIn.getOpcode()) {
 			System.err.println("Opcode does not match!");
+		} else {
+			System.out.println("exito.");
 		}
 	}
 

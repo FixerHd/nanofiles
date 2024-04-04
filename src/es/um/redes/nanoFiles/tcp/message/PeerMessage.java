@@ -15,42 +15,27 @@ import es.um.redes.nanoFiles.util.FileInfo;
 public class PeerMessage {
 
 
-
+	private FileInfo fileInfo;
 
 	private byte opcode;
 
-	private Integer longitud_hash;
-	
-	private byte[] hash;
 
 	/*
 	 * TODO: Añadir atributos y crear otros constructores específicos para crear
 	 * mensajes con otros campos (tipos de datos)
 	 * 
 	 */
-
-
-
+	
 	public PeerMessage() {
-		opcode = PeerMessageOps.OPCODE_INVALID_CODE;
-		longitud_hash = 0;
-		this.hash = new byte[longitud_hash];
+		this.opcode = PeerMessageOps.OPCODE_INVALID_CODE;
 	}
 
-	public PeerMessage(byte op) {
-		opcode = op;
-		longitud_hash = 0;
-		this.hash = new byte[longitud_hash];
-	}
-	
-	public PeerMessage(byte op, int longitud, byte[] hash) {
-		opcode = op;
-		longitud_hash = longitud;
-		this.hash = hash;
-		
+
+	public PeerMessage(byte opcode, FileInfo fileInfo) {
+		this.opcode = opcode;
+		this.fileInfo = fileInfo;
 	}
 
-	
 
 	/*
 	 * TODO: Crear métodos getter y setter para obtener valores de nuevos atributos,
@@ -60,34 +45,22 @@ public class PeerMessage {
 	public byte getOpcode() {
 		return opcode;
 	}
-	
-	public byte[] getHash() {
-        if (hash.length == 0) {
-            throw new IllegalStateException("El hash no ha sido establecido");
-        }
-        return hash;
-    }
 
-    public void setHash(byte[] hash) {
-        if (hash.length == 0) {
-            throw new IllegalArgumentException("El hash no puede ser nulo");
-        }
-        this.hash = hash;
-    }
-    
-    public int getLongitud() {
-        if (longitud_hash == null) {
-            throw new IllegalStateException("La longitud del hash no ha sido establecida");
-        }
-        return longitud_hash;
-    }
+	public FileInfo getFileInfo() {
+		if (fileInfo != null) {
+			return fileInfo;
+		} else {
+			throw new IllegalStateException("FileInfo has not been set.");
+		}
+	}
 
-    public void setLongitud(Integer longitud_hash) {
-        if (longitud_hash == null) {
-            throw new IllegalArgumentException("La longitud del hash no puede ser nula");
-        }
-        this.longitud_hash = longitud_hash;
-    }
+	public void setFileInfo(FileInfo fileInfo) { 
+		if (fileInfo != null) {
+			this.fileInfo = fileInfo;
+		} else {
+			throw new IllegalArgumentException("FileInfo cannot be null.");
+		}
+	}
 
 
 
@@ -113,27 +86,24 @@ public class PeerMessage {
 		byte opcode = dis.readByte();
 		switch (opcode) {
 		case PeerMessageOps.OPCODE_DOWNLOAD:{
-			int longitudDatos = dis.readInt();
-			byte[] datos = new byte[longitudDatos];
-			dis.readFully(datos);
+			String fileName = dis.readUTF();
+			message = new PeerMessage(opcode, new FileInfo(null, fileName, 0, null));
 			break;
 		}
 		case PeerMessageOps.OPCODE_DOWNLOAD_FAIL:{
-			int longitudDatos = dis.readInt();
-			byte[] datos = new byte[longitudDatos];
-			dis.readFully(datos);
+			message = new PeerMessage(opcode, null);
 			break;
 		}
 		case PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_DATA:{
-			int longitudDatos = dis.readInt();
-			byte[] datos = new byte[longitudDatos];
-			dis.readFully(datos);
+			String fileHash = dis.readUTF();
+			String fileName = dis.readUTF();
+			long fileSize = dis.readLong();
+			String filePath = dis.readUTF();
+			message = new PeerMessage(opcode, new FileInfo(fileHash, fileName, fileSize, filePath));
 			break;
 		}
 		case PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_FAIL:{
-			int longitudDatos = dis.readInt();
-			byte[] datos = new byte[longitudDatos];
-			dis.readFully(datos);
+			message = new PeerMessage(opcode, null);
 			break;
 		}
 
@@ -157,33 +127,31 @@ public class PeerMessage {
 		dos.writeByte(opcode);
 		switch (opcode) {
 		case PeerMessageOps.OPCODE_DOWNLOAD:{
-			dos.writeInt(1);
+			if (fileInfo != null) {
+				dos.writeUTF(fileInfo.fileName);
+			}
 			break;
 		}
 		case PeerMessageOps.OPCODE_DOWNLOAD_FAIL:{
-			dos.writeInt(2);
 			break;
 		}
 		case PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_DATA:{
-			dos.writeInt(3);
+			if (fileInfo != null) {
+				dos.writeUTF(fileInfo.fileHash);
+				dos.writeUTF(fileInfo.fileName);
+				dos.writeLong(fileInfo.fileSize);
+				dos.writeUTF(fileInfo.filePath);
+			}
 			break;
 		}
 		case PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_FAIL:{
-			dos.writeInt(4);
 			break;
 		}
-
-
-
 
 		default:
 			System.err.println("PeerMessage.writeMessageToOutputStream found unexpected message opcode " + opcode + "("
 					+ PeerMessageOps.opcodeToOperation(opcode) + ")");
 		}
 	}
-
-
-
-
 
 }
