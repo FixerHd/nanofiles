@@ -9,9 +9,9 @@ import java.util.Vector;
 import es.um.redes.nanoFiles.shell.NFShell;
 
 public class FileInfo {
-	public String fileHash;
-	public String fileName;
-	public String filePath;
+	public String fileHash="";
+	public String fileName="";
+	public String filePath="";
 	public long fileSize = -1;
 
 	public FileInfo(String hash, String name, long size, String path) {
@@ -19,6 +19,10 @@ public class FileInfo {
 		fileName = name;
 		fileSize = size;
 		filePath = path;
+		
+		if(fileHash == null) fileHash = "";
+		if(fileName == null) fileName = "";
+		if(filePath == null) filePath = "";
 	}
 
 	public FileInfo() {
@@ -122,4 +126,25 @@ public class FileInfo {
 		matchingFiles.toArray(result);
 		return result;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+	    if (this == obj) {
+	        return true;
+	    }
+	    if (obj == null || getClass() != obj.getClass()) {
+	        return false;
+	    }
+	    FileInfo fileInfo = (FileInfo) obj;
+	    
+	    // Verificar si alguno de los campos es nulo
+	    if (fileHash == null || fileName == null || filePath == null) {
+	        return false;
+	    }
+
+	    return fileHash.equals(fileInfo.fileHash) &&
+	            fileName.equals(fileInfo.fileName) &&
+	            filePath.equals(fileInfo.filePath) &&
+	            fileSize == fileInfo.fileSize;
+	}	
 }

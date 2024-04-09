@@ -21,7 +21,7 @@ public class PeerMessageTest {
 		 * construye un mensaje idéntico al original.
 		 */
 		
-		PeerMessage msgOut = new PeerMessage(PeerMessageOps.OPCODE_DOWNLOAD, new FileInfo(null, nombreArchivo, 0, null));
+		PeerMessage msgOut = new PeerMessage(PeerMessageOps.OPCODE_DOWNLOAD_FAIL, new FileInfo(null, nombreArchivo, 0, null));
 		msgOut.writeMessageToOutputStream(fos);
 		DataInputStream fis = new DataInputStream(new FileInputStream(nombreArchivo));
 		PeerMessage msgIn = PeerMessage.readMessageFromInputStream((DataInputStream) fis);
@@ -41,6 +41,10 @@ public class PeerMessageTest {
 		}
 		else {
 			System.out.println("exito.");
+			System.out.print(msgOut.getFileInfo());
+			System.out.println();
+			System.out.print(msgIn.getFileInfo());
+			System.out.println();
 		}
 	}
 

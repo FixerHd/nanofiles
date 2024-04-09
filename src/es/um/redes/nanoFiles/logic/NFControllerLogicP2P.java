@@ -8,6 +8,7 @@ import java.net.InetSocketAddress;
 import java.util.LinkedList;
 import java.util.Random;
 
+import es.um.redes.nanoFiles.tcp.client.NFConnector;
 import es.um.redes.nanoFiles.tcp.server.NFServer;
 import es.um.redes.nanoFiles.tcp.server.NFServerSimple;
 
@@ -112,10 +113,24 @@ public class NFControllerLogicP2P {
 		 * este método. Si se produce una excepción de entrada/salida (error del que no
 		 * es posible recuperarse), se debe informar sin abortar el programa
 		 */
+		
+		File localFile = new File(localFileName);
+	    if (localFile.exists()) {
+	        System.out.println("El archivo ya existe en esta máquina, no se realizará la descarga.");
+	        return false;
+	    }
 
+	    try {
+	        NFConnector nfConnector = new NFConnector(fserverAddr);
+	        result = nfConnector.downloadFile(targetFileHash, localFile);
+	        if (result) {
+	            System.out.println("Se ha completado la descarga del archivo.");
+	        }
+	    } catch (IOException e) {
+	        System.err.println("Se produjo un error de entrada/salida: " + e.getMessage());
+	    }
 
-
-		return result;
+	    return result;
 	}
 
 	/**

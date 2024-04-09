@@ -94,7 +94,7 @@ public class PeerMessage {
 		    break;
 		}
 		case PeerMessageOps.OPCODE_DOWNLOAD_FAIL:{
-			message = new PeerMessage(opcode, null);
+			message = new PeerMessage(opcode, new FileInfo());
 			break;
 		}
 		case PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_DATA:{
@@ -103,10 +103,6 @@ public class PeerMessage {
 			long fileSize = dis.readLong();
 			String filePath = dis.readUTF();
 			message = new PeerMessage(opcode, new FileInfo(fileHash, fileName, fileSize, filePath));
-			break;
-		}
-		case PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_FAIL:{
-			message = new PeerMessage(opcode, null);
 			break;
 		}
 
@@ -142,14 +138,11 @@ public class PeerMessage {
 		}
 		case PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_DATA:{
 			if (fileInfo != null) {
-				dos.writeBytes(fileInfo.fileHash);
-				dos.writeBytes(fileInfo.fileName);
+				dos.writeUTF(fileInfo.fileHash);
+				dos.writeUTF(fileInfo.fileName);
 				dos.writeLong(fileInfo.fileSize);
-				dos.writeBytes(fileInfo.filePath);
+				dos.writeUTF(fileInfo.filePath);
 			}
-			break;
-		}
-		case PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_FAIL:{
 			break;
 		}
 
