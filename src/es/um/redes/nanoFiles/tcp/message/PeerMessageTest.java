@@ -31,7 +31,14 @@ public class PeerMessageTest {
 		 */
 		if (msgOut.getOpcode() != msgIn.getOpcode()) {
 			System.err.println("Opcode does not match!");
-		} else {
+		}else if(!msgOut.getFileInfo().equals(msgIn.getFileInfo())) {
+			System.out.print(msgOut.getFileInfo());
+			System.out.println();
+			System.out.print(msgIn.getFileInfo());
+			
+			//System.err.println("fileinfo does not match!");
+		}
+		else {
 			System.out.println("exito.");
 		}
 	}
