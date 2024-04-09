@@ -234,7 +234,17 @@ public class NFControllerLogicDir {
 			 * InetSocketAddress. Para convertir un string con la IP a un objeto InetAddress
 			 * se debe usar InetAddress.getByName()
 			 */
-
+			 String[] parts = serverNicknameOrSocketAddr.split(":");
+		        if (parts.length == 2) {
+		            String ipAddress = parts[0];
+		            int port = Integer.parseInt(parts[1]);
+		            try {
+		                InetAddress inetAddress = InetAddress.getByName(ipAddress);
+		                fserverAddr = new InetSocketAddress(inetAddress, port);
+		            } catch (UnknownHostException e) {
+		                e.printStackTrace();
+		            }
+		        }
 
 
 		} else {

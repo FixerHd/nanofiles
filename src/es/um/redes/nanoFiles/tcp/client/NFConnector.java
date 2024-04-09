@@ -18,6 +18,8 @@ import es.um.redes.nanoFiles.util.FileDigest;
 public class NFConnector {
 	private Socket socket;
 	private InetSocketAddress serverAddr;
+	private DataInputStream dis;
+	private DataOutputStream dos;
 
 
 
@@ -34,6 +36,13 @@ public class NFConnector {
 		 * entrada/salida del socket creado. Se usarán para enviar (dos) y recibir (dis)
 		 * datos del servidor.
 		 */
+		
+		// Crear el socket utilizando la dirección del servidor (IP, puerto)
+        socket = new Socket(serverAddr.getAddress(), serverAddr.getPort());
+        
+        // Crear los DataInputStream/DataOutputStream a partir de los flujos de entrada/salida del socket
+        dis = new DataInputStream(socket.getInputStream());
+        dos = new DataOutputStream(socket.getOutputStream());
 
 
 
