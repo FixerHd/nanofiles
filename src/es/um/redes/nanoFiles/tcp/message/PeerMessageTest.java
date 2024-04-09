@@ -35,6 +35,7 @@ public class PeerMessageTest {
 			System.out.print(msgOut.getFileInfo());
 			System.out.println();
 			System.out.print(msgIn.getFileInfo());
+			System.out.println();
 			
 			//System.err.println("fileinfo does not match!");
 		}
