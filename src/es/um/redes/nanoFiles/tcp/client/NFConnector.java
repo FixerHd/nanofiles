@@ -9,10 +9,12 @@ import java.io.RandomAccessFile;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 
 import es.um.redes.nanoFiles.tcp.message.PeerMessage;
 import es.um.redes.nanoFiles.tcp.message.PeerMessageOps;
 import es.um.redes.nanoFiles.util.FileDigest;
+import es.um.redes.nanoFiles.util.FileInfo;
 
 //Esta clase proporciona la funcionalidad necesaria para intercambiar mensajes entre el cliente y el servidor
 public class NFConnector {
@@ -61,7 +63,6 @@ public class NFConnector {
 	 * @throws IOException Si se produce algún error al leer/escribir del socket.
 	 */
 	public boolean downloadFile(String targetFileHashSubstr, File file) throws IOException {
-		boolean downloaded = false;
 		/*
 		 * TODO: Construir objetos PeerMessage que modelen mensajes con los valores
 		 * adecuados en sus campos (atributos), según el protocolo diseñado, y enviarlos
@@ -95,14 +96,34 @@ public class NFConnector {
 		 * completo del fichero descargado, ya que quizás únicamente obtuvimos una
 		 * subcadena del mismo como parámetro.
 		 */
+		
+		boolean downloaded = false;
+	    FileInfo fileInfo = new FileInfo();
+	    fileInfo.fileHash = targetFileHashSubstr;
+	    PeerMessage message = new PeerMessage(PeerMessageOps.OPCODE_DOWNLOAD, fileInfo);
+	    message.writeMessageToOutputStream(dos);
 
+	    PeerMessage response = PeerMessage.readMessageFromInputStream(dis);
+	    if (response.getOpcode() == PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_DATA) {
+	        // Create a FileOutputStream to write the file data
+	    	FileOutputStream fos = new FileOutputStream(file);
 
+	    	fos.write(response.getFileInfo().fileHash.getBytes());
+	    	fos.write(response.getFileInfo().fileName.getBytes());
+	    	fos.write(ByteBuffer.allocate(4).putLong(response.getFileInfo().fileSize).array());
+	    	fos.write(response.getFileInfo().filePath.getBytes());
+	    	fos.close();
 
+	    	String filePath = file.getPath();
+	    	String downloadedFileHash = FileDigest.computeFileChecksumString(filePath);
+	    	if (downloadedFileHash.equals(response.getFileInfo().fileHash)) {
+	    	    downloaded = true;
+	    	}
 
-		return downloaded;
+	    }
+
+	    return downloaded;
 	}
-
-
 
 
 
