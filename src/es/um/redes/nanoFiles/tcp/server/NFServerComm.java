@@ -67,7 +67,11 @@ public class NFServerComm {
                     break;
                 }
                 case PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_DATA: {
-                    
+                	FileInfo fileInfo = new FileInfo();
+             	    fileInfo.fileHash = "caca";
+             	    fileInfo.fileName = "pedo";
+             	    PeerMessage message = new PeerMessage(PeerMessageOps.OPCODE_DOWNLOAD, fileInfo);
+                    /*
                     FileInfo fileInfo = message.getFileInfo();
                     String filePath = fileInfo.filePath;
                     File file = new File(filePath);
@@ -78,6 +82,7 @@ public class NFServerComm {
                         fos.write(buffer, 0, bytesRead);
                     }
                     fos.close();
+                    */
                     break;
                 }
                 default: {
@@ -86,25 +91,7 @@ public class NFServerComm {
                     System.exit(-1);
                 }
 	            }
-
-	            // Para servir un fichero, hay que localizarlo a partir de su hash (o
-	            // subcadena) en nuestra base de datos de ficheros compartidos. Los ficheros
-	            // compartidos se pueden obtener con NanoFiles.db.getFiles(). El método
-	            // FileInfo.lookupHashSubstring es útil para buscar coincidencias de una
-	            // subcadena del hash. El método NanoFiles.db.lookupFilePath(targethash)
-	            // devuelve la ruta al fichero a partir de su hash completo.
-	            FileInfo fileInfo = message.getFileInfo();
-	            String targetHash = fileInfo.fileHash;
-	            String filePath = NanoFiles.db.lookupFilePath(targetHash);
-	            File archivo = new File(filePath);
-	            FileInputStream fis = new FileInputStream(archivo);
-	            byte[] buffer = new byte[4096];
-	            int bytesRead = -1;
-	            while ((bytesRead = fis.read(buffer)) != -1) {
-	                dos.write(buffer, 0, bytesRead);
-	            }
-	            fis.close();
-	            dos.flush();
+	            
 	        }
 	    } catch (IOException e) {
 	        e.printStackTrace();

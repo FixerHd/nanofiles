@@ -103,7 +103,6 @@ public class NFConnector {
 	    fileInfo.fileName = file.getName();
 	    PeerMessage message = new PeerMessage(PeerMessageOps.OPCODE_DOWNLOAD, fileInfo);
 	    message.writeMessageToOutputStream(dos);
-
 	    PeerMessage response = PeerMessage.readMessageFromInputStream(dis);
 	    if (response.getOpcode() == PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_DATA) {
 	        // Create a FileOutputStream to write the file data
