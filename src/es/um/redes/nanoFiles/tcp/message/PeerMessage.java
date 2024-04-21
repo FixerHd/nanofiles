@@ -90,7 +90,13 @@ public class PeerMessage {
 		    byte[] fileNameBytes = new byte[fileNameLength];
 		    fileNameBytes = dis.readNBytes(fileNameLength);
 		    String fileName = new String(fileNameBytes);
-		    message = new PeerMessage(opcode, new FileInfo(null, fileName, 0, null));
+		    
+		    int fileHashLength = dis.readInt();
+		    byte[] fileHashBytes = new byte[fileHashLength];
+		    fileHashBytes = dis.readNBytes(fileHashLength);
+		    String fileHash = new String(fileHashBytes);
+		    
+		    message = new PeerMessage(opcode, new FileInfo(fileHash, fileName, 0, null));
 		    break;
 		}
 		case PeerMessageOps.OPCODE_DOWNLOAD_FAIL:{
@@ -130,6 +136,10 @@ public class PeerMessage {
 		        byte[] fileNameBytes = fileInfo.fileName.getBytes();
 		        dos.writeInt(fileNameBytes.length);
 		        dos.write(fileNameBytes);
+		        
+		        byte[] fileHashBytes = fileInfo.fileHash.getBytes();
+	            dos.writeInt(fileHashBytes.length);
+	            dos.write(fileHashBytes);
 		    }
 		    break;
 		}

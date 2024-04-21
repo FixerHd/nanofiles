@@ -21,10 +21,10 @@ public class PeerMessageTest {
 		 * construye un mensaje idéntico al original.
 		 */
 		
-		PeerMessage msgOut = new PeerMessage(PeerMessageOps.OPCODE_DOWNLOAD_FAIL, new FileInfo(null, nombreArchivo, 0, null));
+		PeerMessage msgOut = new PeerMessage(PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_DATA, new FileInfo(null, nombreArchivo, 0, null));
 		msgOut.writeMessageToOutputStream(fos);
 		DataInputStream fis = new DataInputStream(new FileInputStream(nombreArchivo));
-		PeerMessage msgIn = PeerMessage.readMessageFromInputStream((DataInputStream) fis);
+		PeerMessage msgIn = PeerMessage.readMessageFromInputStream(fis);
 		/*
 		 * TODO: Comprobar que coinciden los valores de los atributos relevantes al tipo
 		 * de mensaje en ambos mensajes (msgOut y msgIn), empezando por el opcode.
