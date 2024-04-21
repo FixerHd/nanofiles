@@ -100,6 +100,7 @@ public class NFConnector {
 		boolean downloaded = false;
 	    FileInfo fileInfo = new FileInfo();
 	    fileInfo.fileHash = targetFileHashSubstr;
+	    fileInfo.fileName = file.getName();
 	    PeerMessage message = new PeerMessage(PeerMessageOps.OPCODE_DOWNLOAD, fileInfo);
 	    message.writeMessageToOutputStream(dos);
 
