@@ -70,7 +70,7 @@ public class NFServerComm {
                 	FileInfo fileInfo = new FileInfo();
              	    fileInfo.fileHash = "caca";
              	    fileInfo.fileName = "pedo";
-             	    PeerMessage message = new PeerMessage(PeerMessageOps.OPCODE_DOWNLOAD, fileInfo);
+             	    //PeerMessage message = new PeerMessage(PeerMessageOps.OPCODE_DOWNLOAD, fileInfo);
                     /*
                     FileInfo fileInfo = message.getFileInfo();
                     String filePath = fileInfo.filePath;
@@ -97,7 +97,7 @@ public class NFServerComm {
 	        e.printStackTrace();
 	    }
 
-
+		
 	}
 
 

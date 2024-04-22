@@ -16,7 +16,7 @@ public class PeerMessage {
 
 
 	private FileInfo fileInfo;
-
+File
 	private byte opcode;
 
 
