@@ -82,14 +82,13 @@ public class NFServerComm {
 	    				System.out.println("Fichero enviado correctamente");
 	                    break;
 	            	}
-                }
-                
-                default: {
+	            	
+                } default: {
                     System.err.println("PeerMessage.readMessageFromInputStream no sabe como parsear este código: "
                             + PeerMessageOps.opcodeToOperation(opcode));
                     System.exit(-1);
                 }
-	            }
+	       }
 	            
 	    } catch (IOException e) {
 	        e.printStackTrace();

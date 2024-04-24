@@ -47,14 +47,16 @@ public class NFServerSimple {
 		
 		if (serverSocket.isBound()) {
 		    System.out.println("El socket del servidor está ligado correctamente.");
-		    try {
-			    System.out.println("Esperando conexiones...");
-			    Socket clientSocket = serverSocket.accept();
-			    System.out.println("Un peer se ha conectado: " + clientSocket.getInetAddress());
-			    NFServerComm.serveFilesToClient(clientSocket);
-			} catch (IOException e) {
-			    System.out.println("Error al aceptar la conexión del cliente: " + e.getMessage());
-			}
+		    while (true) {
+			    try {
+				    System.out.println("Esperando conexiones...");
+				    Socket clientSocket = serverSocket.accept();
+				    System.out.println("Un peer se ha conectado: " + clientSocket.getInetAddress());
+				    NFServerComm.serveFilesToClient(clientSocket);
+				} catch (IOException e) {
+				    System.out.println("Error al aceptar la conexión del cliente: " + e.getMessage());
+				}
+		    }
 		} else {
 		    System.out.println("El socket del servidor no está ligado.");
 		}
