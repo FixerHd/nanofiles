@@ -100,7 +100,6 @@ public class NFConnector {
 		
 		boolean downloaded = false;
 		String hash = null;
-
 	    FileInfo fileInfo = new FileInfo();
 	    fileInfo.fileHash = targetFileHashSubstr;
 	    fileInfo.fileName = file.getName();
@@ -130,7 +129,7 @@ public class NFConnector {
 	    } else if (response.getOpcode() == PeerMessageOps.OPCODE_DOWNLOAD_FAIL) {
 	    	System.err.println("Error al descargar el archivo. Puede ser que no exista el fichero o que hayan varios con el mismo hash.");
 	    }
-
+	    socket.close();
 	    return downloaded;
 	}
 

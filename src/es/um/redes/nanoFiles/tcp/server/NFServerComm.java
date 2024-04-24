@@ -42,7 +42,6 @@ public class NFServerComm {
 	        DataInputStream dis = new DataInputStream(socket.getInputStream());
 	        DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
-	        while (!socket.isClosed()) {
 	            PeerMessage message = PeerMessage.readMessageFromInputStream(dis);
 	            byte opcode = message.getOpcode();
 
@@ -92,7 +91,6 @@ public class NFServerComm {
                 }
 	            }
 	            
-	        }
 	    } catch (IOException e) {
 	        e.printStackTrace();
 	    }
