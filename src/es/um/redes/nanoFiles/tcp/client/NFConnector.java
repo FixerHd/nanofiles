@@ -10,6 +10,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 import es.um.redes.nanoFiles.tcp.message.PeerMessage;
 import es.um.redes.nanoFiles.tcp.message.PeerMessageOps;
@@ -98,6 +99,8 @@ public class NFConnector {
 		 */
 		
 		boolean downloaded = false;
+		String hash = null;
+
 	    FileInfo fileInfo = new FileInfo();
 	    fileInfo.fileHash = targetFileHashSubstr;
 	    fileInfo.fileName = file.getName();
@@ -106,20 +109,26 @@ public class NFConnector {
 	    PeerMessage response = PeerMessage.readMessageFromInputStream(dis);
 	    if (response.getOpcode() == PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_DATA) {
 	        // Create a FileOutputStream to write the file data
-	    	FileOutputStream fos = new FileOutputStream(file);
-
-	    	fos.write(response.getFileInfo().fileHash.getBytes());
-	    	fos.write(response.getFileInfo().fileName.getBytes());
-	    	fos.write(ByteBuffer.allocate(4).putLong(response.getFileInfo().fileSize).array());
-	    	fos.write(response.getFileInfo().filePath.getBytes());
-	    	fos.close();
-
-	    	String filePath = file.getPath();
-	    	String downloadedFileHash = FileDigest.computeFileChecksumString(filePath);
-	    	if (downloadedFileHash.equals(response.getFileInfo().fileHash)) {
-	    	    downloaded = true;
-	    	}
-
+	    	FileOutputStream fichero = new FileOutputStream(file);
+	    	fichero.write(response.getData());
+	    	while(downloaded == false) {
+	    		PeerMessage datos = PeerMessage.readMessageFromInputStream(dis);
+				if (PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_DATA == datos.getOpcode()) {
+					fichero.write(datos.getData());
+				}
+				else if (PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_OK == datos.getOpcode()){
+					downloaded = true;
+					hash = new String(datos.getFileInfo().fileHash.getBytes(),StandardCharsets.UTF_8);
+				}
+			}
+	    	fichero.close();
+			downloaded = FileDigest.computeFileChecksumString(file.getName()).equals(hash);
+			if (!downloaded) System.err.println("El hash no coincide");
+	    		
+	   
+	    	
+	    } else if (response.getOpcode() == PeerMessageOps.OPCODE_DOWNLOAD_FAIL) {
+	    	System.err.println("Error al descargar el archivo. Puede ser que no exista el fichero o que hayan varios con el mismo hash.");
 	    }
 
 	    return downloaded;

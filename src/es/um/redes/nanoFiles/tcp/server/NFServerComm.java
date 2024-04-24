@@ -10,6 +10,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import es.um.redes.nanoFiles.application.NanoFiles;
 import es.um.redes.nanoFiles.tcp.message.PeerMessage;
@@ -47,46 +49,44 @@ public class NFServerComm {
 	            switch (opcode) {
 	            case PeerMessageOps.OPCODE_DOWNLOAD: {
 
-                    FileInfo fileInfo = message.getFileInfo();
-                    String targetHash = fileInfo.fileHash;
-                    String filePath = NanoFiles.db.lookupFilePath(targetHash);
+	            	FileInfo ficheros[] = NanoFiles.db.getFiles();
+	            	FileInfo[] ficherosCoinciden =
+							FileInfo.lookupHashSubstring(ficheros, new String(message.getFileInfo().fileHash.getBytes(),StandardCharsets.UTF_8));
+	            	if (ficherosCoinciden.length == 0 || ficherosCoinciden.length > 1) {
+						PeerMessage respuesta = new PeerMessage(PeerMessageOps.OPCODE_DOWNLOAD_FAIL, null);
+						respuesta.writeMessageToOutputStream(dos);
+						break;
 
-                    File file = new File(filePath);
-                    FileInputStream fis = new FileInputStream(file);
-                    byte[] buffer = new byte[4096];
-                    int bytesRead = -1;
-                    while ((bytesRead = fis.read(buffer)) != -1) {
-                        dos.write(buffer, 0, bytesRead);
-                    }
-                    fis.close();
-                    dos.flush();
-                    break;
+	            	}	else {
+						
+	                    String targetHash = ficherosCoinciden[0].fileHash;
+	                    String filePath = NanoFiles.db.lookupFilePath(targetHash);
+	
+	                    File file = new File(filePath);
+	                    FileInputStream fis = new FileInputStream(file);
+	                    long filelength = file.length();
+	    				byte data[] = new byte[(int) filelength];
+	    				fis.read(data);
+	    				fis.close();
+	    				int numMsg = (data.length/32768)+1;									//Mensajes de 48000 bytes necesarios
+	    				for(int i = 0; i<numMsg; i++) {										//Iterar sobre el contenido del fichero,
+	    					byte[] aux;														//creando por cada 48000 bytes un mensaje
+	    					if((i+1)*32768<=data.length)
+	    						aux = Arrays.copyOfRange(data, i*32768, (i+1)*32768);		//Si necesitan varios mensajes
+	    					else
+	    						aux = Arrays.copyOfRange(data, i*32768, data.length);		//Si solo se necesita un mensaje
+	    					PeerMessage msg = new PeerMessage(PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_DATA, null, aux);
+	    					msg.writeMessageToOutputStream(dos);
+	    				}
+	    				PeerMessage dlOk = new PeerMessage(PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_OK, new FileInfo(targetHash, "", 0, filePath));
+	    				dlOk.writeMessageToOutputStream(dos);
+	    				System.out.println("Fichero enviado correctamente");
+	                    break;
+	            	}
                 }
-                case PeerMessageOps.OPCODE_DOWNLOAD_FAIL: {
-                    dos.writeUTF("La descarga ha fallado.");
-                    break;
-                }
-                case PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_DATA: {
-                	FileInfo fileInfo = new FileInfo();
-             	    fileInfo.fileHash = "caca";
-             	    fileInfo.fileName = "pedo";
-             	    //PeerMessage message = new PeerMessage(PeerMessageOps.OPCODE_DOWNLOAD, fileInfo);
-                    /*
-                    FileInfo fileInfo = message.getFileInfo();
-                    String filePath = fileInfo.filePath;
-                    File file = new File(filePath);
-                    FileOutputStream fos = new FileOutputStream(file);
-                    byte[] buffer = new byte[4096];
-                    int bytesRead = -1;
-                    while ((bytesRead = dis.read(buffer)) != -1) {
-                        fos.write(buffer, 0, bytesRead);
-                    }
-                    fos.close();
-                    */
-                    break;
-                }
+                
                 default: {
-                    System.err.println("PeerMessage.readMessageFromInputStream doesn't know how to parse this message opcode: "
+                    System.err.println("PeerMessage.readMessageFromInputStream no sabe como parsear este código: "
                             + PeerMessageOps.opcodeToOperation(opcode));
                     System.exit(-1);
                 }

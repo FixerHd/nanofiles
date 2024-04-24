@@ -9,6 +9,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 import es.um.redes.nanoFiles.util.FileInfo;
 
@@ -17,6 +18,7 @@ public class PeerMessage {
 
 	private FileInfo fileInfo;
 	private byte opcode;
+	private byte[] data;
 
 
 	/*
@@ -33,7 +35,17 @@ public class PeerMessage {
 	public PeerMessage(byte opcode, FileInfo fileInfo) {
 		this.opcode = opcode;
 		this.fileInfo = fileInfo;
+		this.data = null;
 	}
+	
+	public PeerMessage(byte opcode, FileInfo fileInfo, byte[] data) {
+		this.opcode = opcode;
+		this.fileInfo = fileInfo;
+		this.data = data;
+	}
+
+
+	
 
 
 	/*
@@ -43,6 +55,15 @@ public class PeerMessage {
 	 */
 	public byte getOpcode() {
 		return opcode;
+	}
+	
+	public byte[] getData() {
+		return data;
+	}
+
+
+	public void setData(byte[] data) {
+		this.data = data;
 	}
 
 	public FileInfo getFileInfo() {
@@ -103,11 +124,17 @@ public class PeerMessage {
 			break;
 		}
 		case PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_DATA:{
-			String fileHash = dis.readUTF();
-			String fileName = dis.readUTF();
-			long fileSize = dis.readLong();
-			String filePath = dis.readUTF();
-			message = new PeerMessage(opcode, new FileInfo(fileHash, fileName, fileSize, filePath));
+			int hashLength = dis.readInt();
+			byte[] data = new byte[hashLength];
+			dis.readFully(data);
+			message = new PeerMessage(opcode, null, data);
+			break;
+		} case PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_OK:{
+			int length = dis.readInt(); // Lee la longitud del array
+			byte[] fileHashBytes = new byte[length]; // Crea un array de bytes con la longitud leída
+			dis.readFully(fileHashBytes); // Lee el array de bytes
+			String fileHash = new String(fileHashBytes, StandardCharsets.UTF_8);
+			message = new PeerMessage(opcode, new FileInfo(fileHash, "", 0, null));
 			break;
 		}
 
@@ -146,13 +173,15 @@ public class PeerMessage {
 			break;
 		}
 		case PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_DATA:{
-			if (fileInfo != null) {
-				dos.writeUTF(fileInfo.fileHash);
-				dos.writeUTF(fileInfo.fileName);
-				dos.writeLong(fileInfo.fileSize);
-				dos.writeUTF(fileInfo.filePath);
-			}
+			assert(data.length > 0);
+			dos.writeInt(data.length);
+			dos.write(data);
 			break;
+		} case PeerMessageOps.OPCODE_DOWNLOAD_RESPONSE_OK:{
+			byte[] fileHashBytes = fileInfo.fileHash.getBytes(StandardCharsets.UTF_8);
+			dos.writeInt(fileHashBytes.length); // Escribe la longitud del array
+			dos.write(fileHashBytes); // Escribe el array de bytes
+            break;
 		}
 
 		default:
