@@ -207,6 +207,9 @@ public class DirectoryConnector {
 		} catch (IOException e) {
 			
 		}
+		if(recibidos==null) {
+			return success;
+		}
 		String str = new String(recibidos);
 		DirMessage rcbd = DirMessage.fromString(str);
 		
@@ -251,6 +254,9 @@ public class DirectoryConnector {
 		} catch (IOException e) {
 			
 		}
+		if(recibidos==null) {
+			return userlist;
+		}
 		String str = new String(recibidos);
 		DirMessage rcbd = DirMessage.fromString(str);
 		String op = rcbd.getOperation();
@@ -286,6 +292,9 @@ public class DirectoryConnector {
 			recibidos = sendAndReceiveDatagrams(datos);
 		} catch (IOException e) {
 			
+		}
+		if(recibidos==null) {
+			return success;
 		}
 		String str = new String(recibidos);
 		DirMessage rcbd = DirMessage.fromString(str);
