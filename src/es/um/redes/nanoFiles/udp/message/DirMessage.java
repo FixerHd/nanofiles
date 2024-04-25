@@ -193,17 +193,18 @@ public class DirMessage {
 					m.setNicks(value);
 					
 					break;
-				}/*case DirMessageOps.OPERATION_LOGIN_FAILED:
+				}case DirMessageOps.OPERATION_LOGIN_FAILED:
 				{
 					m = new DirMessage(field);
 					m.setNickname(value);
 					break;
-				}*/
+				}
 				default:
 				{
 					System.err.println("PANIC: DirMessage.fromString - message with unknown field name " + field);
 					System.err.println("Message was:\n" + message);
-					System.exit(-1);
+					m = new DirMessage(field);
+					
 				}
 			}
 	
@@ -264,12 +265,12 @@ public class DirMessage {
 				s = operation + ":" + getNicks();
 				break;
 				
-			}/*case DirMessageOps.OPERATION_LOGIN_FAILED:
+			}case DirMessageOps.OPERATION_LOGIN_FAILED:
 			{
 				s = operation + ":" + nickname;
 				break;
 				
-			}*/
+			}
 			default:
 				break;
 		}

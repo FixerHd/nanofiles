@@ -70,6 +70,7 @@ public class NFControllerLogicDir {
 			e.printStackTrace();
 		}
 		result = directoryConnector.logIntoDirectory(nickname);
+		if(!result) directoryConnector = null;
 		return result;
 	}
 
