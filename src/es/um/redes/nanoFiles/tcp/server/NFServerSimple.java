@@ -54,11 +54,11 @@ public class NFServerSimple {
 				    System.out.println("Un peer se ha conectado: " + clientSocket.getInetAddress());
 				    NFServerComm.serveFilesToClient(clientSocket);
 				} catch (IOException e) {
-				    System.out.println("Error al aceptar la conexión del cliente: " + e.getMessage());
+				    System.err.println("Error al aceptar la conexión del cliente: " + e.getMessage());
 				}
 		    }
 		} else {
-		    System.out.println("El socket del servidor no está ligado.");
+		    System.err.println("El socket del servidor no está ligado.");
 		}
 		/*
 		 * TODO: Usar el socket servidor para esperar conexiones de otros peers que

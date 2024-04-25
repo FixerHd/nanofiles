@@ -223,7 +223,7 @@ public class DirectoryConnector {
 			System.out.println("Se ha hecho login éxitosamente y la clave de sesión es " + val);
 			sessionKey=Integer.parseInt(val);
 		} else {
-			System.out.println("El mensaje recibido no es 'loginok'");
+			System.err.println("El mensaje recibido no es 'loginok'");
 			return success;
 
 		}
@@ -298,7 +298,7 @@ public class DirectoryConnector {
 			//sessionKey=Integer.parseInt(val);
 			sessionKey=INVALID_SESSION_KEY;
 		} else {
-			System.out.println("El mensaje recibido no es 'logoutok'");
+			System.err.println("El mensaje recibido no es 'logoutok'");
 			return success;
 
 		}

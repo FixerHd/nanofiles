@@ -138,7 +138,7 @@ public class NFController {
 			 * Pedir al controllerPeer que lance un servidor de ficheros en primer plano
 			 * (método foregroundServeFiles). Este método no retorna...
 			 */
-			if(controllerDir.isnotLogged()) System.out.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			if(controllerDir.isnotLogged()) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
 			else controllerPeer.foregroundServeFiles();
 			break;
 		case NFCommands.COM_PUBLISH:
@@ -183,7 +183,7 @@ public class NFController {
 			 * al comando) y lo guarde con el nombre indicado en downloadLocalFileName (3er
 			 * argumento)
 			 */
-			if(controllerDir.isnotLogged()) System.out.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			if(controllerDir.isnotLogged()) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
 			else {
 				InetSocketAddress serverAddr = controllerDir.getServerAddress(downloadTargetServer);
 			

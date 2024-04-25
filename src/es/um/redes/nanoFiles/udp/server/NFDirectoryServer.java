@@ -148,7 +148,7 @@ public class NFDirectoryServer {
 						DatagramPacket paqueteACliente = new DatagramPacket(dataToClient, dataToClient.length, clientAddr);
 						socket.send(paqueteACliente);
 					} else {
-						System.out.println("Error. El mensaje recibido no es 'login'");
+						System.err.println("Error. El mensaje recibido no es 'login'");
 						break;
 					}
 
