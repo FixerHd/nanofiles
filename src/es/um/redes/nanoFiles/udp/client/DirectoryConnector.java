@@ -99,7 +99,7 @@ public class DirectoryConnector {
 		int intentos = 0;
 		while (intentos < MAX_NUMBER_OF_ATTEMPTS){
 			try{
-				socket.setSoTimeout(100000);
+				socket.setSoTimeout(TIMEOUT);
 				DatagramPacket receivePacket = new DatagramPacket(responseData, responseData.length);
                 socket.receive(receivePacket);
 				response = new byte[receivePacket.getLength()];
