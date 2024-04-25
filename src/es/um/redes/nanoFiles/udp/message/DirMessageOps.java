@@ -13,7 +13,7 @@ public class DirMessageOps {
 	public static final String OPERATION_USERLIST = "userlist";
 	public static final String OPERATION_USERLISTOK = "userlistok";
 	public static final String OPERATION_LOGOUTOK = "logoutok";
-	public static final String OPERATION_LOGIN_FAILED = "login_failed";
+	//public static final String OPERATION_LOGIN_FAILED = "login_failed";
 
 
 
