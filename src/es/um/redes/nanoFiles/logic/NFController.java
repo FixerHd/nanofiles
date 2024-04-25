@@ -138,7 +138,8 @@ public class NFController {
 			 * Pedir al controllerPeer que lance un servidor de ficheros en primer plano
 			 * (método foregroundServeFiles). Este método no retorna...
 			 */
-			controllerPeer.foregroundServeFiles();
+			if(controllerDir.isnotLogged()) System.out.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			else controllerPeer.foregroundServeFiles();
 			break;
 		case NFCommands.COM_PUBLISH:
 			/*

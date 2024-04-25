@@ -329,5 +329,9 @@ public class NFControllerLogicDir {
 	protected InetSocketAddress getDirectoryAddress() {
 		return directoryConnector.getDirectoryAddress();
 	}
+	
+	public boolean isnotLogged() {
+		return directoryConnector == null;
+	}
 
 }
