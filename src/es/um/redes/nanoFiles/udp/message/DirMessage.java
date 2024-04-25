@@ -193,6 +193,11 @@ public class DirMessage {
 					m.setNicks(value);
 					
 					break;
+				}case DirMessageOps.OPERATION_LOGIN_FAILED:
+				{
+					m = new DirMessage(field);
+					m.setNickname(value);
+					break;
 				}
 				default:
 				{
@@ -257,6 +262,11 @@ public class DirMessage {
 			case DirMessageOps.OPERATION_USERLISTOK:
 			{
 				s = operation + ":" + getNicks();
+				break;
+				
+			}case DirMessageOps.OPERATION_LOGIN_FAILED:
+			{
+				s = operation + ":" + nickname;
 				break;
 				
 			}

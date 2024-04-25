@@ -245,7 +245,7 @@ public class NFDirectoryServer {
 				response = DirMessage.fromString(mensajeACliente);
 			} else {
 				mensajeACliente = "login_failed:-1";
-				response = new DirMessage(mensajeACliente);
+				response = DirMessage.fromString(mensajeACliente);
 			}
 			
 			/*
