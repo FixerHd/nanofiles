@@ -183,9 +183,13 @@ public class NFController {
 			 * al comando) y lo guarde con el nombre indicado en downloadLocalFileName (3er
 			 * argumento)
 			 */
-			InetSocketAddress serverAddr = controllerDir.getServerAddress(downloadTargetServer);
+			if(controllerDir.isnotLogged()) System.out.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			else {
+				InetSocketAddress serverAddr = controllerDir.getServerAddress(downloadTargetServer);
+			
 			commandSucceeded = controllerPeer.downloadFileFromSingleServer(serverAddr, downloadTargetFileHash,
 					downloadLocalFileName);
+			}
 			break;
 		case NFCommands.COM_SEARCH:
 			/*
