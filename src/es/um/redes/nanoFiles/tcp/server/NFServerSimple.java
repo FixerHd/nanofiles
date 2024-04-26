@@ -48,6 +48,10 @@ public class NFServerSimple {
 		
 
 	}
+	
+	public int getPuertodinamico() {
+		return puerto_dinamico;
+	}
 
 	/**
 	 * Método para ejecutar el servidor de ficheros en primer plano. Sólo es capaz

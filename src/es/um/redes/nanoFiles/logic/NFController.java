@@ -139,7 +139,7 @@ public class NFController {
 			 * (método foregroundServeFiles). Este método no retorna...
 			 */
 			if(controllerDir.isnotLogged()) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
-			else controllerPeer.foregroundServeFiles();
+			else controllerPeer.foregroundServeFiles(controllerDir);
 			break;
 		case NFCommands.COM_PUBLISH:
 			/*

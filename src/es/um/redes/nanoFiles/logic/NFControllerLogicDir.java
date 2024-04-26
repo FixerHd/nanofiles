@@ -159,10 +159,14 @@ public class NFControllerLogicDir {
 		 * éxito/fracaso de la operación.
 		 */
 		boolean result = false;
-
-
-
+		if( directoryConnector == null){
+			System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			return result;
+		}
+		result = directoryConnector.registerServerPort(serverPort);	
+	
 		return result;
+		
 	}
 
 	/**
@@ -203,9 +207,11 @@ public class NFControllerLogicDir {
 		 * IP:puerto válidos), se debe devolver null.
 		 */
 		InetSocketAddress serverAddr = null;
-
-
-
+		if( directoryConnector == null){
+			System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			return serverAddr;
+		}
+	    serverAddr = directoryConnector.lookupServerAddrByUsername(nickname);
 		return serverAddr;
 	}
 
@@ -253,6 +259,7 @@ public class NFControllerLogicDir {
 			 * TODO: Si es un nickname, preguntar al directorio la IP:puerto asociada a
 			 * dicho peer servidor.
 			 */
+
 			fserverAddr = lookupServerAddrByUsername(serverNicknameOrSocketAddr);
 		}
 		return fserverAddr;

@@ -37,10 +37,11 @@ public class NFControllerLogicP2P {
 
 	/**
 	 * Método para arrancar un servidor de ficheros en primer plano.
+	 * @param controllerDir 
 	 * 
 	 */
 	
-	protected void foregroundServeFiles() {
+	protected void foregroundServeFiles(NFControllerLogicDir controllerDir) {
 		/*
 		 * TODO: Crear objeto servidor NFServerSimple y ejecutarlo en primer plano.
 		 */
@@ -52,6 +53,7 @@ public class NFControllerLogicP2P {
 
 		try {
             NFServerSimple servidorSimple = new NFServerSimple();
+            controllerDir.registerFileServer(servidorSimple.getPuertodinamico());
             servidorSimple.run(); 
         } catch (IOException e) {
             System.err.println("Error al iniciar el servidor en primer plano: " + e.getMessage());

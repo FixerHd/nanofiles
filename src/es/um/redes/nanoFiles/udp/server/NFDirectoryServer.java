@@ -43,6 +43,8 @@ public class NFDirectoryServer {
 	 * funcionalidad del sistema nanoFilesP2P: ficheros publicados, servidores
 	 * registrados, etc.
 	 */
+	
+	private HashMap<String, InetSocketAddress> IPpuertos;
 
 
 
@@ -76,6 +78,7 @@ public class NFDirectoryServer {
 		 */
 		nicks = new HashMap<>();
 		sessionKeys = new HashMap<>();
+		IPpuertos = new HashMap<>();
 
 
 		if (NanoFiles.testMode) {
@@ -238,6 +241,7 @@ public class NFDirectoryServer {
 			 */
 			
 			if(!nicks.keySet().contains(username)) {
+				
 				sessionkey = random.nextInt(10000);
 				nicks.put(username, sessionkey);
 				sessionKeys.put(sessionkey, username);
@@ -298,10 +302,25 @@ public class NFDirectoryServer {
 			response = DirMessage.fromString(DirMessageOps.OPERATION_LOGOUTOK + ":" + sessionKey);
 			
 			break;
+		}case DirMessageOps.OPERATION_LOOKUP: {
+			String nickname = msg.getNickname();
+			response = DirMessage.fromString(DirMessageOps.OPERATION_LOOKUP + ":" + IPpuertos.get(nickname));
+			break;
+		}case DirMessageOps.OPERATION_REGISTER: {
+			String nickname = msg.getNickname();
+			String sessionKey = msg.getSessionkey();
+			String usuario = sessionKeys.get(Integer.parseInt(sessionKey));
+			InetSocketAddress ip = new InetSocketAddress(clientAddr.getAddress(), Integer.parseInt(nickname));
+			IPpuertos.put(usuario, ip);
+			response = DirMessage.fromString(DirMessageOps.OPERATION_REGISTEROK + ":" + sessionKey);
+			break;
+
+			
+			
+	
+
+
 		}
-
-
-
 		default:
 			System.out.println("Unexpected message operation: \"" + operation + "\"");
 		}

@@ -46,6 +46,7 @@ public class DirMessage {
 	private int sessionkey;
 	
 	private String nicks;
+	
 
 
 
@@ -111,46 +112,9 @@ public class DirMessage {
 		 * guardarlo en variables locales.
 		 */
 
-		// System.out.println("DirMessage read from socket:");
-		// System.out.println(message);
-		//String[] lines = message.split(END_LINE + "");
-		//String[] lines = null;
-		// Local variables to save data during parsing
 		DirMessage m = null;
-
-
-		/*
-		for (String line : lines) {
-			int idx = line.indexOf(DELIMITER); // Posición del delimitador
-			String fieldName = line.substring(0, idx).toLowerCase(); // minúsculas
-			String value = line.substring(idx + 1).trim();
-
-			switch (fieldName) {
-			case FIELDNAME_OPERATION: {
-				assert (m == null);
-				m = new DirMessage(value);
-				break;
-			}
-			default:
-				System.err.println("PANIC: DirMessage.fromString - message with unknown field name " + fieldName);
-				System.err.println("Message was:\n" + message);
-				System.exit(-1);
-			}
-			
-		}*/
-		
-		/*int idx = lines[0].indexOf(DELIMITER); // Posición del delimitador
-		//int idx2 = lines[0].indexOf("&");
-		String field = lines[0].substring(0, idx).toLowerCase(); // minúsculas
-		System.out.println(field);
-		//String value = lines[0].substring(idx + 1).trim();
-		String value = lines[0].substring(idx + 1).trim();
-		//String value2 = lines[0].substring(idx2 + 1).trim();*/
-		
 		int idx = message.indexOf(DELIMITER); // Posición del delimitador
-		//int idx2 = lines[0].indexOf("&");
 		String field = message.substring(0, idx).toLowerCase(); // minúsculas;
-		//String value = lines[0].substring(idx + 1).trim();
 		String value = message.substring(idx + 1).trim();
 		
 
@@ -197,6 +161,32 @@ public class DirMessage {
 				{
 					m = new DirMessage(field);
 					m.setNickname(value);
+					break;
+				}case DirMessageOps.OPERATION_LOOKUP:
+				{
+					m = new DirMessage(field);
+					m.setNickname(value);
+					break;
+				}case DirMessageOps.OPERATION_REGISTER:
+				{
+					m = new DirMessage(field);
+					String[] cadenas = value.split(",");
+					m.setNickname(cadenas[0]);
+					m.setSessionkey(cadenas[1]);
+					break;
+				}case DirMessageOps.OPERATION_REGISTEROK:
+				{
+					m = new DirMessage(field);
+					m.setSessionkey(value);
+					break;
+				}case DirMessageOps.OPERATION_UNREGISTER:
+				{
+					m = new DirMessage(field);
+					m.setNickname(value);
+					break;
+				}case DirMessageOps.OPERATION_UNREGISTEROK:
+				{
+					m = new DirMessage(field);
 					break;
 				}
 				default:
@@ -268,6 +258,21 @@ public class DirMessage {
 			}case DirMessageOps.OPERATION_LOGIN_FAILED:
 			{
 				s = operation + ":" + nickname;
+				break;
+				
+			}case DirMessageOps.OPERATION_LOOKUP:
+			{
+				s = operation + ":" + nickname;
+				break;
+				
+			}case DirMessageOps.OPERATION_REGISTER:
+			{
+				s = operation + ":" + nickname + "," + sessionkey;
+				break;
+				
+			}case DirMessageOps.OPERATION_REGISTEROK:
+			{
+				s = operation + ":" + sessionkey;
 				break;
 				
 			}

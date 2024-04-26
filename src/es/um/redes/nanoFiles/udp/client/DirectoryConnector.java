@@ -6,6 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 import es.um.redes.nanoFiles.udp.message.DirMessage;
 import es.um.redes.nanoFiles.udp.message.DirMessageOps;
@@ -24,7 +25,7 @@ public class DirectoryConnector {
 	 * socket antes de que se deba lanzar una excepción SocketTimeoutException para
 	 * recuperar el control
 	 */
-	private static final int TIMEOUT = 1000;
+	private static final int TIMEOUT = 100000;
 	/**
 	 * Número de intentos máximos para obtener del directorio una respuesta a una
 	 * solicitud enviada. Cada vez que expira el timeout sin recibir respuesta se
@@ -304,7 +305,6 @@ public class DirectoryConnector {
 			success = true;
 			val = rcbd.getSessionkey();
 			System.out.println("El logout se ha completado con éxito y se ha eliminado la clave " + val);
-			//sessionKey=Integer.parseInt(val);
 			sessionKey=INVALID_SESSION_KEY;
 		} else {
 			System.err.println("El mensaje recibido no es 'logoutok'");
@@ -327,9 +327,31 @@ public class DirectoryConnector {
 	public boolean registerServerPort(int serverPort) {
 		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
 		boolean success = false;
+		DirMessage msg = DirMessage.fromString(DirMessageOps.OPERATION_REGISTER + ":" + serverPort + "," + sessionKey);
+		String mensaje = msg.toString();
+		byte[] datos = mensaje.getBytes();
+		byte[] recibidos = null;
+		try {
+			recibidos = sendAndReceiveDatagrams(datos);
+		} catch (IOException e) {
+			
 
+		}
+		String str = new String(recibidos);
+		DirMessage rcbd = DirMessage.fromString(str);
+		String op = rcbd.getOperation();
+		String val;
+		if(op.equals("registerok") && recibidos!=null) {
+			success = true;
+			val = rcbd.getSessionkey();
+			System.out.println("Se ha registrado en el directorio que el usuario con sessionKey: " + val + 
+					"está sirviendo archivos");
+			sessionKey=INVALID_SESSION_KEY;
+		} else {
+			System.err.println("ERROR");
+			return success;
 
-
+		}
 		return success;
 	}
 
@@ -344,11 +366,41 @@ public class DirectoryConnector {
 	 */
 	public InetSocketAddress lookupServerAddrByUsername(String nick) {
 		InetSocketAddress serverAddr = null;
-		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
 
+	    // Construir y enviar la solicitud de búsqueda al directorio
+	    String lookupRequest = "lookup:" + nick; // Construye el mensaje de búsqueda
+	    byte[] requestData = lookupRequest.getBytes(); // Convierte el mensaje en bytes
 
+	    // Envía la solicitud al directorio y recibe la respuesta
+	    byte[] responseData = null;
+	    try {
+	        responseData = sendAndReceiveDatagrams(requestData);
+	    } catch (IOException e) {
+	        // Manejar cualquier excepción que pueda ocurrir durante la comunicación con el directorio
+	        e.printStackTrace();
+	    }
 
-		return serverAddr;
+	    // Analizar la respuesta del directorio para obtener la dirección del servidor
+	    if (responseData != null) {
+	        String responseStr = new String(responseData);
+	        String[] parts = responseStr.split(":");
+	        if (parts.length == 3 && parts[0].equals("lookup")) {
+            	String ip = parts[1];
+                int port = Integer.parseInt(parts[2]);
+                try {
+                	InetAddress inetAddress = InetAddress.getByName(ip.substring(1));
+                    serverAddr = new InetSocketAddress(inetAddress, port);
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				}
+	        } else {
+	            System.err.println("Respuesta no válida del directorio para la operación de búsqueda.");
+	        }
+	    } else {
+	        System.err.println("No se recibió respuesta del directorio para la operación de búsqueda.");
+	    }
+
+	    return serverAddr;
 	}
 
 	/**
