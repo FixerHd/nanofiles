@@ -16,20 +16,36 @@ public class NFServerSimple {
 	private static final String STOP_SERVER_COMMAND = "fgstop";
 	private static final int PORT = 10000;
 	private ServerSocket serverSocket = null;
+	private int puerto_dinamico = PORT;
+
 
 	public NFServerSimple() throws IOException {
 		/*
 		 * TODO: Crear una direción de socket a partir del puerto especificado
 		 */
-		InetSocketAddress direccionSocket = new InetSocketAddress(PORT);
 		
 		
 		/*
 		 * TODO: Crear un socket servidor y ligarlo a la dirección de socket anterior
 		 */
 
-		serverSocket = new ServerSocket();
-		serverSocket.bind(direccionSocket);
+		boolean puertoDisponible = false;
+        while (!puertoDisponible) {
+            try {
+                // Crear una dirección de socket a partir del puerto actual
+                InetSocketAddress socketAddress = new InetSocketAddress(puerto_dinamico);
+                // Crear un socket servidor y ligarlo a la dirección de socket
+                serverSocket = new ServerSocket();
+                serverSocket.bind(socketAddress);
+                // Si no hay excepciones, el puerto está disponible
+                puertoDisponible = true;
+            } catch (IOException e) {
+                // Si ocurre una excepción, el puerto está ocupado, intentar con el siguiente
+                puerto_dinamico++;
+            }
+        }
+		
+		
 
 	}
 
@@ -47,6 +63,7 @@ public class NFServerSimple {
 		
 		if (serverSocket.isBound()) {
 		    System.out.println("El socket del servidor está ligado correctamente.");
+		    System.out.println("PUERTO: " + puerto_dinamico);
 		    while (true) {
 			    try {
 				    System.out.println("Esperando conexiones...");

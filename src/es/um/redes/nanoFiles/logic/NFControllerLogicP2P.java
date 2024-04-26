@@ -52,7 +52,7 @@ public class NFControllerLogicP2P {
 
 		try {
             NFServerSimple servidorSimple = new NFServerSimple();
-            servidorSimple.run(); //no se por qué no deja con el start
+            servidorSimple.run(); 
         } catch (IOException e) {
             System.err.println("Error al iniciar el servidor en primer plano: " + e.getMessage());
         }
