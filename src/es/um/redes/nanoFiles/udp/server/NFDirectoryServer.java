@@ -322,7 +322,7 @@ public class NFDirectoryServer {
 	        FileInfo[] archivos = new FileInfo[arrayDeStrings.length];
 			for (String s : arrayDeStrings) {
 				int i = 0;
-	            // Quitamos los corchetes y separamos cada string por los dos puntos y el punto y coma
+	            // Quitamos los corchetes y separamos AQUI string por los dos puntos y el punto y coma
 	            String[] atributos = s.replaceAll("[\\[\\]]", "").split("[:;,]");
 	            FileInfo fileInfo = new FileInfo(atributos[0], atributos[1], Integer.parseInt(atributos[2]), atributos[3]);
 	            archivos[i]=fileInfo;
