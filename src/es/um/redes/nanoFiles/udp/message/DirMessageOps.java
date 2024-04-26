@@ -20,6 +20,8 @@ public class DirMessageOps {
 	public static final String OPERATION_REGISTEROK = "registerok";
 	public static final String OPERATION_UNREGISTER = "unregister";
 	public static final String OPERATION_UNREGISTEROK = "unregisterok";
+	public static final String OPERATION_PUBLISH = "publish";
+	public static final String OPERATION_PUBLISHOK = "publishok";
 
 
 

@@ -46,7 +46,7 @@ public class NFDirectoryServer {
 	
 	private HashMap<String, InetSocketAddress> IPpuertos;
 
-
+	private HashMap<Integer, FileInfo[]> ficheros;
 
 
 	/**
@@ -95,7 +95,7 @@ public class NFDirectoryServer {
 		System.out.println("Directory starting...");
 
 		while (true) { // Bucle principal del servidor de directorio
-			byte[] receptionBuffer = new byte[32];
+			byte[] receptionBuffer = new byte[65507];
 			InetSocketAddress clientAddr = null;
 			int dataLength = -1;
 			/*
@@ -314,12 +314,22 @@ public class NFDirectoryServer {
 			IPpuertos.put(usuario, ip);
 			response = DirMessage.fromString(DirMessageOps.OPERATION_REGISTEROK + ":" + sessionKey);
 			break;
-
+		}case DirMessageOps.OPERATION_PUBLISH: {
 			
-			
-	
-
-
+			String nickname = msg.getNickname();
+			int sessionKey = Integer.parseInt(msg.getSessionkey());
+	        String[] arrayDeStrings = nickname.replace(" ", "").split(",");
+	        FileInfo[] archivos = new FileInfo[arrayDeStrings.length];
+			for (String s : arrayDeStrings) {
+				int i = 0;
+	            // Quitamos los corchetes y separamos cada string por los dos puntos y el punto y coma
+	            String[] atributos = s.replaceAll("[\\[\\]]", "").split("[:;,]");
+	            FileInfo fileInfo = new FileInfo(atributos[0], atributos[1], Integer.parseInt(atributos[2]), atributos[3]);
+	            archivos[i]=fileInfo;
+	        }
+			ficheros.put(sessionKey, archivos);
+			response = DirMessage.fromString(DirMessageOps.OPERATION_PUBLISHOK + ":" + sessionKey);
+			break;
 		}
 		default:
 			System.out.println("Unexpected message operation: \"" + operation + "\"");

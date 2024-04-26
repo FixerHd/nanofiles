@@ -7,6 +7,8 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+import javax.net.ssl.ExtendedSSLSession;
+
 import es.um.redes.nanoFiles.application.NanoFiles;
 import es.um.redes.nanoFiles.udp.client.DirectoryConnector;
 import es.um.redes.nanoFiles.util.FileInfo;
@@ -183,9 +185,13 @@ public class NFControllerLogicDir {
 		 * operación.
 		 */
 		boolean result = false;
-
-
-
+		if( directoryConnector == null){
+			System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			return result;
+		}
+		FileInfo[] ficheros = NanoFiles.db.getFiles();
+		result = directoryConnector.publishLocalFiles(ficheros);	
+	
 		return result;
 	}
 

@@ -413,7 +413,27 @@ public class DirectoryConnector {
 	 */
 	public boolean publishLocalFiles(FileInfo[] files) {
 		boolean success = false;
+		StringBuilder filesDetails = new StringBuilder();
 
+        // Iterar sobre cada FileInfo
+        for (FileInfo fileInfo : files) {
+            // Concatenar los detalles de cada FileInfo al StringBuilder
+            filesDetails.append("[")
+            		   .append(fileInfo.fileName).append(":")
+                       .append(fileInfo.fileHash).append(",") 
+                       .append(fileInfo.fileSize).append(";")
+                       .append(fileInfo.filePath).append("]"); 
+        }
+		DirMessage msg = DirMessage.fromString(DirMessageOps.OPERATION_PUBLISH + ":" + filesDetails + "&" + sessionKey);
+		String mensaje = msg.toString();
+		byte[] datos = mensaje.getBytes();
+		byte[] recibidos = null;
+		try {
+			recibidos = sendAndReceiveDatagrams(datos);
+		} catch (IOException e) {
+			
+
+		}
 		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
 
 

@@ -179,14 +179,17 @@ public class DirMessage {
 					m = new DirMessage(field);
 					m.setSessionkey(value);
 					break;
-				}case DirMessageOps.OPERATION_UNREGISTER:
+				}case DirMessageOps.OPERATION_PUBLISH:
+				{
+					m = new DirMessage(field);
+					String[] partes = value.split("&");
+					m.setSessionkey(partes[1]);
+					m.setNickname(partes[0]);
+					break;
+				}case DirMessageOps.OPERATION_PUBLISHOK:
 				{
 					m = new DirMessage(field);
 					m.setNickname(value);
-					break;
-				}case DirMessageOps.OPERATION_UNREGISTEROK:
-				{
-					m = new DirMessage(field);
 					break;
 				}
 				default:
@@ -275,6 +278,14 @@ public class DirMessage {
 				s = operation + ":" + sessionkey;
 				break;
 				
+			}case DirMessageOps.OPERATION_PUBLISH:
+			{
+				s = operation + ":" + nickname + "&" + sessionkey;
+				break;
+			}case DirMessageOps.OPERATION_PUBLISHOK:
+			{
+				s = operation + ":" + sessionkey;
+				break;
 			}
 			default:
 				break;
