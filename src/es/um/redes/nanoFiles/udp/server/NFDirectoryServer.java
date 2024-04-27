@@ -358,6 +358,9 @@ public class NFDirectoryServer {
 				response = DirMessage.fromString(DirMessageOps.OPERATION_FILELISTOK + ":" + mensajeACliente);
 			}
 			break;
+		}case DirMessageOps.OPERATION_SEARCH: {
+			
+			break;
 		}
 		default:
 			System.out.println("Unexpected message operation: \"" + operation + "\"");

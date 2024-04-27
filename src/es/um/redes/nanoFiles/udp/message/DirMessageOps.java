@@ -24,6 +24,8 @@ public class DirMessageOps {
 	public static final String OPERATION_PUBLISHOK = "publishok";
 	public static final String OPERATION_FILELIST = "filelist";
 	public static final String OPERATION_FILELISTOK = "filelistok";
+	public static final String OPERATION_SEARCH = "search";
+	public static final String OPERATION_SEARCHOK = "searchok";
 
 
 
