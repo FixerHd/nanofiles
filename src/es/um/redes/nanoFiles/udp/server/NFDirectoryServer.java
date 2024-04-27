@@ -281,7 +281,7 @@ public class NFDirectoryServer {
 				for(String s : conjunto_nicks) {
 					mensajeACliente += s;
 					if(IPpuertos.keySet().contains(s)) {
-						mensajeACliente += " sirviendo";
+						mensajeACliente += " 'Sirviendo ficheros...'";
 					}
 					mensajeACliente += "\n";
 				}
