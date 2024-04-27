@@ -79,6 +79,7 @@ public class NFDirectoryServer {
 		nicks = new HashMap<>();
 		sessionKeys = new HashMap<>();
 		IPpuertos = new HashMap<>();
+		ficheros = new HashMap<>();
 
 
 		if (NanoFiles.testMode) {
@@ -318,14 +319,15 @@ public class NFDirectoryServer {
 			
 			String nickname = msg.getNickname();
 			int sessionKey = Integer.parseInt(msg.getSessionkey());
-	        String[] arrayDeStrings = nickname.replace(" ", "").split(",");
+	        String[] arrayDeStrings = nickname.replace("[", "").replace("]", "").split("\\$");
 	        FileInfo[] archivos = new FileInfo[arrayDeStrings.length];
+	        int i = 0;
 			for (String s : arrayDeStrings) {
-				int i = 0;
 	            // Quitamos los corchetes y separamos AQUI string por los dos puntos y el punto y coma
 	            String[] atributos = s.replaceAll("[\\[\\]]", "").split("[:;,]");
 	            FileInfo fileInfo = new FileInfo(atributos[0], atributos[1], Integer.parseInt(atributos[2]), atributos[3]);
 	            archivos[i]=fileInfo;
+	            i++;
 	        }
 			ficheros.put(sessionKey, archivos);
 			response = DirMessage.fromString(DirMessageOps.OPERATION_PUBLISHOK + ":" + sessionKey);

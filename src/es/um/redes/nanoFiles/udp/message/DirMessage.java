@@ -189,7 +189,7 @@ public class DirMessage {
 				}case DirMessageOps.OPERATION_PUBLISHOK:
 				{
 					m = new DirMessage(field);
-					m.setNickname(value);
+					m.setSessionkey(value);
 					break;
 				}
 				default:

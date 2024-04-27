@@ -345,10 +345,9 @@ public class DirectoryConnector {
 			success = true;
 			val = rcbd.getSessionkey();
 			System.out.println("Se ha registrado en el directorio que el usuario con sessionKey: " + val + 
-					"está sirviendo archivos");
-			sessionKey=INVALID_SESSION_KEY;
+					" está sirviendo archivos");
 		} else {
-			System.err.println("ERROR");
+			System.err.println("El mensaje recibido no es 'registerok'");
 			return success;
 
 		}
@@ -422,7 +421,7 @@ public class DirectoryConnector {
             		   .append(fileInfo.fileName).append(":")
                        .append(fileInfo.fileHash).append(",") 
                        .append(fileInfo.fileSize).append(";")
-                       .append(fileInfo.filePath).append("]"); 
+                       .append(fileInfo.filePath).append("]").append("$"); 
         }
 		DirMessage msg = DirMessage.fromString(DirMessageOps.OPERATION_PUBLISH + ":" + filesDetails + "&" + sessionKey);
 		String mensaje = msg.toString();
@@ -434,8 +433,22 @@ public class DirectoryConnector {
 			
 
 		}
-		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
+		String str = new String(recibidos);
+		DirMessage rcbd = DirMessage.fromString(str);
+		String op = rcbd.getOperation();
+		String val;
+		if(op.equals("publishok") && recibidos!=null) {
+			success = true;
+			val = rcbd.getSessionkey();
+			System.out.println("Los ficheros del usuario con sessionKey: " + val + 
+					" se han publicado al directorio.");
+		} else {
+			System.err.println("El mensaje recibido no es 'publishok'");
+			return success;
 
+		}
+		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
+		
 
 
 		return success;
