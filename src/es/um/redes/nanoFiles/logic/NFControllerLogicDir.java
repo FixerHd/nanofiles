@@ -151,9 +151,7 @@ public class NFControllerLogicDir {
 		}
 		result = true;
 		
-		for(int i = 0; i<array.length; i++) {
-			System.out.println(array[i]);
-		}
+		FileInfo.printToSysout(array);
 
 
 		return result;

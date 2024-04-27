@@ -329,12 +329,34 @@ public class NFDirectoryServer {
 			for (String s : arrayDeStrings) {
 	            // Quitamos los corchetes y separamos AQUI string por los dos puntos y el punto y coma
 	            String[] atributos = s.replaceAll("[\\[\\]]", "").split("[:;,]");
-	            FileInfo fileInfo = new FileInfo(atributos[0], atributos[1], Integer.parseInt(atributos[2]), atributos[3]);
+	            FileInfo fileInfo = new FileInfo(atributos[1], atributos[0], Integer.parseInt(atributos[2]), atributos[3]);
 	            archivos[i]=fileInfo;
 	            i++;
 	        }
 			ficheros.put(sessionKey, archivos);
 			response = DirMessage.fromString(DirMessageOps.OPERATION_PUBLISHOK + ":" + sessionKey);
+			break;
+		}case DirMessageOps.OPERATION_FILELIST: {
+			String mensajeACliente = "";
+			Set <Integer> conjunto_keys = new HashSet<>();
+			if(ficheros.isEmpty()) {
+				mensajeACliente = "filelist_failed";
+				response = new DirMessage(mensajeACliente);
+			}else {
+				conjunto_keys = ficheros.keySet();
+				for(Integer i : conjunto_keys) {
+					FileInfo[] arrayFicheros = ficheros.get(i);
+					for(FileInfo file: arrayFicheros) {
+						mensajeACliente			 
+					             += file.fileName + ":"
+					             + file.fileHash + ":"
+					             + file.fileSize + ":"
+					             + file.filePath + "$";
+					}
+					
+				}
+				response = DirMessage.fromString(DirMessageOps.OPERATION_FILELISTOK + ":" + mensajeACliente);
+			}
 			break;
 		}
 		default:
