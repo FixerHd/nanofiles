@@ -47,6 +47,7 @@ public class DirMessage {
 	
 	private String nicks;
 	
+	
 
 
 
@@ -191,6 +192,17 @@ public class DirMessage {
 					m = new DirMessage(field);
 					m.setSessionkey(value);
 					break;
+				}case DirMessageOps.OPERATION_FILELIST:
+				{
+					m = new DirMessage(field);
+					m.setSessionkey(value);
+					break;
+				}case DirMessageOps.OPERATION_FILELISTOK:
+				{
+					m = new DirMessage(field);
+					m.setNicks(value);
+					
+					break;
 				}
 				default:
 				{
@@ -285,6 +297,14 @@ public class DirMessage {
 			}case DirMessageOps.OPERATION_PUBLISHOK:
 			{
 				s = operation + ":" + sessionkey;
+				break;
+			}case DirMessageOps.OPERATION_FILELIST:
+			{
+				s = operation + ":" + getSessionkey();
+				break;
+			}case DirMessageOps.OPERATION_FILELISTOK:
+			{
+				s = operation + ":" + getNicks();
 				break;
 			}
 			default:

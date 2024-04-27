@@ -1,5 +1,6 @@
 package es.um.redes.nanoFiles.logic;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -137,8 +138,22 @@ public class NFControllerLogicDir {
 		 * por pantalla (método FileInfo.printToSysout). Devolver éxito/fracaso de la
 		 * operación.
 		 */
+		
 		boolean result = false;
-
+		if( directoryConnector == null){
+			System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			return result;
+		}
+		FileInfo[] array = directoryConnector.getFileList();
+		if(array == null) {
+			return result;
+			
+		}
+		result = true;
+		
+		for(int i = 0; i<array.length; i++) {
+			System.out.println(array[i]);
+		}
 
 
 		return result;

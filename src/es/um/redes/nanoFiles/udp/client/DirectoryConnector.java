@@ -466,8 +466,31 @@ public class DirectoryConnector {
 	public FileInfo[] getFileList() {
 		FileInfo[] filelist = null;
 		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
-
-
+		assert (sessionKey != INVALID_SESSION_KEY);
+		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
+		DirMessage msg = DirMessage.fromString(DirMessageOps.OPERATION_FILELIST + ":" + sessionKey);
+		String mensaje = msg.toString();
+		byte[] datos = mensaje.getBytes();
+		byte[] recibidos = null;
+		try {
+			recibidos = sendAndReceiveDatagrams(datos);
+		} catch (IOException e) {
+			
+		}
+		if(recibidos==null) {
+			return filelist;
+		}
+		String str = new String(recibidos);
+		DirMessage rcbd = DirMessage.fromString(str);
+		String op = rcbd.getOperation();
+		if(op.equals("filelistok") && recibidos!=null) {
+			System.out.println(rcbd.getNicks());
+		}
+		if(str.equals("filelist:-1")){
+			return filelist;
+		}else {
+			
+		}
 
 		return filelist;
 	}
