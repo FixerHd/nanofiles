@@ -279,7 +279,11 @@ public class NFDirectoryServer {
 			}else {
 				conjunto_nicks = nicks.keySet();
 				for(String s : conjunto_nicks) {
-					mensajeACliente += s + "\n";
+					mensajeACliente += s;
+					if(IPpuertos.keySet().contains(s)) {
+						mensajeACliente += " sirviendo";
+					}
+					mensajeACliente += "\n";
 				}
 				response = DirMessage.fromString(DirMessageOps.OPERATION_USERLISTOK + ":" + mensajeACliente);
 			}
