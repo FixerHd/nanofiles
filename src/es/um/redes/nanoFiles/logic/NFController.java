@@ -17,6 +17,8 @@ public class NFController {
 	 */
 	private static final byte LOGGED_OUT = 0;
 	private static final byte LOGGED_IN = 1;
+	private static final byte SERVING = 2;
+	private static final byte DOWNLOADING_FROM = 3;
 	/*
 	 * TODO: Añadir más constantes que representen los estados del autómata del
 	 * cliente de directorio.
@@ -110,22 +112,19 @@ public class NFController {
 			 * Pedir al controllerDir que "inicie sesión" en el directorio, para comprobar
 			 * que está activo y disponible, y registrar un nombre de usuario.
 			 */
-			if(currentState != LOGGED_OUT) System.err.println("ERROR, el usuario ya está logeado en el directorio");
-			else {
-				commandSucceeded = controllerDir.doLogin(directory, nickname);
-				if(commandSucceeded) currentState = LOGGED_IN;
-			}
+			
+			commandSucceeded = controllerDir.doLogin(directory, nickname);
+			if(commandSucceeded) currentState = LOGGED_IN;
 			break;
 		case NFCommands.COM_LOGOUT:
 			/*
 			 * Pedir al controllerDir que "cierre sesión" en el directorio para dar de baja
 			 * el nombre de usuario registrado (método doLogout).
 			 */
-			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
-			else {
-				commandSucceeded = controllerDir.doLogout();
-				if(commandSucceeded) currentState = LOGGED_OUT;
-			}
+			
+			commandSucceeded = controllerDir.doLogout();
+			if(commandSucceeded) currentState = LOGGED_OUT;
+			
 			
 			break;
 		case NFCommands.COM_USERLIST:
@@ -133,8 +132,7 @@ public class NFController {
 			 * Pedir al controllerDir que obtenga del directorio la lista de nicknames
 			 * registrados, y la muestre por pantalla (método getAndPrintUserList)
 			 */
-			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
-			else commandSucceeded = controllerDir.getAndPrintUserList();
+			commandSucceeded = controllerDir.getAndPrintUserList();
 			break;
 		case NFCommands.COM_FILELIST:
 			/*
@@ -142,16 +140,14 @@ public class NFController {
 			 * hay publicados (los ficheros que otros peers están sirviendo), y la imprima
 			 * por pantalla (método getAndPrintFileList)
 			 */
-			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
-			else commandSucceeded = controllerDir.getAndPrintFileList();
+			commandSucceeded = controllerDir.getAndPrintFileList();
 			break;
 		case NFCommands.COM_FGSERVE:
 			/*
 			 * Pedir al controllerPeer que lance un servidor de ficheros en primer plano
 			 * (método foregroundServeFiles). Este método no retorna...
 			 */
-			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
-			else controllerPeer.foregroundServeFiles(controllerDir);
+			controllerPeer.foregroundServeFiles(controllerDir);
 			break;
 		case NFCommands.COM_PUBLISH:
 			/*
@@ -159,8 +155,7 @@ public class NFController {
 			 * ficheros disponibles (NanoFiles.db) para ser descargados desde otros peers
 			 * (método publishLocalFiles)
 			 */
-			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
-			else commandSucceeded = controllerDir.publishLocalFiles();
+			commandSucceeded = controllerDir.publishLocalFiles();
 			break;
 		case NFCommands.COM_BGSERVE:
 			/*
@@ -182,10 +177,8 @@ public class NFController {
 			 * solicite al directorio darnos de baja como servidor de ficheros (método
 			 * unregisterFileServer).
 			 */
-			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
-			else {controllerPeer.stopBackgroundFileServer();
+			controllerPeer.stopBackgroundFileServer();
 			commandSucceeded = controllerDir.unregisterFileServer();
-			}
 			break;
 		case NFCommands.COM_DOWNLOADFROM:
 			/*
@@ -198,13 +191,10 @@ public class NFController {
 			 * al comando) y lo guarde con el nombre indicado en downloadLocalFileName (3er
 			 * argumento)
 			 */
-			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
-			else {
-				InetSocketAddress serverAddr = controllerDir.getServerAddress(downloadTargetServer);
-			
+			InetSocketAddress serverAddr = controllerDir.getServerAddress(downloadTargetServer);
 			commandSucceeded = controllerPeer.downloadFileFromSingleServer(serverAddr, downloadTargetFileHash,
 					downloadLocalFileName);
-			}
+			
 			break;
 		case NFCommands.COM_SEARCH:
 			/*
@@ -212,8 +202,7 @@ public class NFController {
 			 * que tienen disponible el fichero identificado por dicho hash (puede ser una
 			 * subcadena del hash o el hash completo)
 			 */
-			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
-			else commandSucceeded = controllerDir.getAndPrintServersNicknamesSharingThisFile(downloadTargetFileHash);
+			commandSucceeded = controllerDir.getAndPrintServersNicknamesSharingThisFile(downloadTargetFileHash);
 			break;
 		case NFCommands.COM_DOWNLOAD:
 			/*
@@ -223,14 +212,11 @@ public class NFController {
 			 * fichero, pedir al controllerPeer que descargue el fichero indicado de los
 			 * servidores obtenidos, y lo guarde con el nombre indicado en
 			 * downloadLocalFileName (2º argumento)
-			 */
-			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
-			else {
+			 */		
 			LinkedList<InetSocketAddress> serverAddressList = controllerDir
 					.getServerAddressesSharingThisFile(downloadTargetFileHash);
 			commandSucceeded = controllerPeer.downloadFileFromMultipleServers(serverAddressList, downloadTargetFileHash,
 					downloadLocalFileName);
-			}
 			break;
 		case NFCommands.COM_QUIT:
 		default:
@@ -263,7 +249,76 @@ public class NFController {
 				System.err.println("* You cannot login because you are not logged out from the directory");
 			}
 			break;
-		
+		case NFCommands.COM_LOGOUT:
+			if (currentState != LOGGED_IN) {
+				commandAllowed = false;
+				System.err.println("* You cannot logout because you are not logged in the directory");
+			}
+			break;
+
+		case NFCommands.COM_USERLIST:
+			if (currentState != LOGGED_IN) {
+				commandAllowed = false;
+				System.err.println("* You cannot list users because you are not logged in the directory");
+			}
+			break;
+
+		case NFCommands.COM_FILELIST:
+			if (currentState != LOGGED_IN) {
+				commandAllowed = false;
+				System.err.println("* You cannot list files because you are not logged in the directory");
+			}
+			break;
+
+		case NFCommands.COM_FGSERVE:
+			if (currentState != LOGGED_IN) {
+				commandAllowed = false;
+				System.err.println("* You cannot foreground serve files because you are not logged in the directory");
+			}
+			break;
+
+		case NFCommands.COM_PUBLISH:
+			if (currentState != LOGGED_IN) {
+				commandAllowed = false;
+				System.err.println("* You cannot publish files because you are not logged in the directory");
+			}
+			break;
+		case NFCommands.COM_BGSERVE:
+			if (currentState != LOGGED_IN) {
+				commandAllowed = false;
+				System.err.println("* You cannot background serve files because you are not logged in the directory");
+			}
+			break;
+		case NFCommands.COM_STOP_SERVER:
+			if (currentState != LOGGED_IN) {
+				commandAllowed = false;
+				System.err.println("* You cannot stop the server because you are not logged in the directory");
+			}
+			break;
+		case NFCommands.COM_SEARCH:
+			if (currentState != LOGGED_IN) {
+				commandAllowed = false;
+				System.err.println("* You cannot search files because you are not logged in the directory");
+			}
+			break;
+		case NFCommands.COM_DOWNLOAD:
+			if (currentState != LOGGED_IN) {
+				commandAllowed = false;
+				System.err.println("* You cannot download files because you are not logged in the directory");
+			}
+			break;
+		case NFCommands.COM_DOWNLOADFROM:
+			if (currentState != LOGGED_IN) {
+				commandAllowed = false;
+				System.err.println("* You cannot download files from a server because you are not logged in the directory");
+			}
+			break;
+		case NFCommands.COM_QUIT:
+			if (currentState != LOGGED_OUT) {
+				commandAllowed = false;
+				System.err.println("* You cannot quit because you are not logged out from the directory");
+			}
+			break;
 
 
 
@@ -291,6 +346,46 @@ public class NFController {
 		
 		case NFCommands.COM_LOGOUT: {
 			currentState = LOGGED_OUT;
+			break;
+		}
+
+		case NFCommands.COM_PUBLISH: {
+			currentState = LOGGED_IN;
+			break;
+		}
+
+		case NFCommands.COM_FGSERVE: {
+			currentState = SERVING;
+			break;
+		}
+
+		case NFCommands.COM_USERLIST: {
+			currentState = LOGGED_IN;
+			break;
+		}
+
+		case NFCommands.COM_FILELIST: {
+			currentState = LOGGED_IN;
+			break;
+		}
+
+		case NFCommands.COM_SEARCH: {
+			currentState = LOGGED_IN;
+			break;
+		}
+
+		case NFCommands.COM_DOWNLOAD: {
+			currentState = LOGGED_IN;
+			break;
+		}
+
+		case NFCommands.COM_DOWNLOADFROM: {
+			currentState = DOWNLOADING_FROM;
+			break;
+		}
+
+		case NFCommands.COM_MYFILES: {
+			currentState = LOGGED_IN;
 			break;
 		}
 

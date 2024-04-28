@@ -9,11 +9,12 @@ public class DirMessageOps {
 	public static final String OPERATION_INVALID = "invalid_operation";
 	public static final String OPERATION_LOGIN = "login";
 	public static final String OPERATION_LOGINOK = "loginok";
+	public static final String OPERATION_LOGIN_FAILED = "login_failed";
 	public static final String OPERATION_LOGOUT = "logout";
 	public static final String OPERATION_USERLIST = "userlist";
 	public static final String OPERATION_USERLISTOK = "userlistok";
+	public static final String OPERATION_USERLIST_FAILED = "userlist_failed";
 	public static final String OPERATION_LOGOUTOK = "logoutok";
-	public static final String OPERATION_LOGIN_FAILED = "login_failed";
 	public static final String OPERATION_LOOKUP = "lookup";
 	public static final String OPERATION_LOOKUPOK = "lookupok";
 	public static final String OPERATION_REGISTER = "register";

@@ -132,11 +132,10 @@ public class NFControllerLogicDir {
 		boolean result = false;
 		FileInfo[] array = directoryConnector.getFileList();
 		if(array == null) {
+			System.err.println("Aún no hay ficheros publicados en el directorio.");
 			return result;
-			
 		}
 		result = true;
-		
 		FileInfo.printToSysout(array);
 
 

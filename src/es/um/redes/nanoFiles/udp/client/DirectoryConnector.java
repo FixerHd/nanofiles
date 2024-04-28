@@ -486,22 +486,20 @@ public class DirectoryConnector {
 		int i = 0;
 		if(op.equals("filelistok") && recibidos!=null) {
 			String contenido = rcbd.getNicks();
-			String[] archivosUser = contenido.split("\\$");
-			filelist = new FileInfo[archivosUser.length];
-			for(String s: archivosUser) {
-				String[] atributos = s.split(":");
-				FileInfo f = new FileInfo(atributos[1], atributos[0], Long.parseLong(atributos[2]), atributos[3]);
-				filelist[i] = f;
-				i++;
+			if(!contenido.equals("filelist_failed:-1")) {
+				String[] archivosUser = contenido.split("\\$");
+				filelist = new FileInfo[archivosUser.length];
+				for(String s: archivosUser) {
+					String[] atributos = s.split(":");
+					FileInfo f = new FileInfo(atributos[1], atributos[0], Long.parseLong(atributos[2]), atributos[3]);
+					filelist[i] = f;
+					i++;
+				}	
+			}else {
+				return filelist;
 			}
-			
+	
 		}
-		if(str.equals("filelist_fail")){
-			return filelist;
-		}else {
-			
-		}
-
 		return filelist;
 	}
 

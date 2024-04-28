@@ -275,7 +275,7 @@ public class NFDirectoryServer {
 			Set <String> conjunto_nicks = new HashSet<>();
 			if(nicks.isEmpty()) {
 				mensajeACliente = "userlist_failed:-1";
-				response = new DirMessage(mensajeACliente);
+				response = DirMessage.fromString(DirMessageOps.OPERATION_USERLISTOK + ":" + mensajeACliente);
 			}else {
 				conjunto_nicks = nicks.keySet();
 				for(String s : conjunto_nicks) {
@@ -340,8 +340,8 @@ public class NFDirectoryServer {
 			String mensajeACliente = "";
 			Set <Integer> conjunto_keys = new HashSet<>();
 			if(ficheros.isEmpty()) {
-				mensajeACliente = "filelist_failed";
-				response = new DirMessage(mensajeACliente);
+				mensajeACliente = "filelist_failed:-1";
+				response = DirMessage.fromString(DirMessageOps.OPERATION_FILELISTOK + ":" + mensajeACliente);
 			}else {
 				conjunto_keys = ficheros.keySet();
 				for(Integer i : conjunto_keys) {
