@@ -298,8 +298,29 @@ public class NFControllerLogicDir {
 		 * y obtener una lista con sus nicknames. Devolver éxito/fracaso de la
 		 * operación.
 		 */
+		
+		
 		boolean result = false;
 
+		String[] claves = directoryConnector.getServerNicknamesSharingThisFile(fileHashSubstring);
+		if(claves == null) {
+			return result;
+			
+		}
+		result = true;
+
+		if (claves.length > 0) {
+		    StringBuilder mensaje = new StringBuilder("El fichero lo tienen los usuarios: ");
+		    for (int i = 0; i < claves.length; i++) {
+		        mensaje.append(claves[i]);
+		        if (i < claves.length - 1) {
+		            mensaje.append(", ");
+		        }
+		    }
+		    System.out.println(mensaje.toString());
+		} else {
+		    System.out.println("El fichero no está compartido por ningún usuario.");
+		}
 
 
 		return result;

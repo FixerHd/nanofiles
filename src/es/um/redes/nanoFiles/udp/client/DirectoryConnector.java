@@ -517,10 +517,42 @@ public class DirectoryConnector {
 	public String[] getServerNicknamesSharingThisFile(String fileHash) {
 		String[] nicklist = null;
 		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
-
-
+		assert (sessionKey != INVALID_SESSION_KEY);
+		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
+		DirMessage msg = DirMessage.fromString(DirMessageOps.OPERATION_SEARCH + ":" + fileHash);
+		String mensaje = msg.toString();
+		byte[] datos = mensaje.getBytes();
+		byte[] recibidos = null;
+		try {
+			recibidos = sendAndReceiveDatagrams(datos);
+		} catch (IOException e) {
+			
+		}
+		if(recibidos==null) {
+			return nicklist;
+		}
+		String str = new String(recibidos);
+		DirMessage rcbd = DirMessage.fromString(str);
+		String op = rcbd.getOperation();
+		int i = 0;
+		if(op.equals("searchok") && recibidos!=null) {
+			String contenido = rcbd.getNicks();
+			String[] claves = contenido.split(":");
+			nicklist = new String[claves.length];
+			for(String s: claves) {
+				nicklist[i] = s;
+				i++;
+			}
+			
+		}
+		if(str.equals("searchok_fail")){
+			return nicklist;
+		}else {
+			
+		}
 
 		return nicklist;
+		
 	}
 
 

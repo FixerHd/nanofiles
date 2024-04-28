@@ -359,7 +359,33 @@ public class NFDirectoryServer {
 			}
 			break;
 		}case DirMessageOps.OPERATION_SEARCH: {
-			
+			String mensajeACliente = "";
+			Set <Integer> conjunto_keys = ficheros.keySet();
+			String[] claves = new String[conjunto_keys.size()];
+			String subhash = msg.getNickname();
+			int i = 0;
+			if(ficheros.isEmpty()) {
+				mensajeACliente = "search_failed";
+				response = new DirMessage(mensajeACliente);
+			}else {
+				conjunto_keys = ficheros.keySet();
+				for(Integer key : conjunto_keys) {
+					FileInfo[] arrayFicheros = ficheros.get(key);
+					for(FileInfo file: arrayFicheros) {
+						if(file.fileHash.contains(subhash)) {
+							claves[i]=sessionKeys.get(key);
+							i++;
+						}
+						
+					}
+					
+				}
+				for(String j: claves) {
+					mensajeACliente			 
+		             += j + ":";
+				}
+				response = DirMessage.fromString(DirMessageOps.OPERATION_SEARCHOK + ":" + mensajeACliente);
+			}
 			break;
 		}
 		default:

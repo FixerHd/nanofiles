@@ -203,6 +203,17 @@ public class DirMessage {
 					m.setNicks(value);
 					
 					break;
+				}case DirMessageOps.OPERATION_SEARCH:
+				{
+					m = new DirMessage(field);
+					m.setNickname(value);
+					break;
+				}case DirMessageOps.OPERATION_SEARCHOK:
+				{
+					m = new DirMessage(field);
+					m.setNicks(value);
+					
+					break;
 				}
 				default:
 				{
@@ -303,6 +314,14 @@ public class DirMessage {
 				s = operation + ":" + getSessionkey();
 				break;
 			}case DirMessageOps.OPERATION_FILELISTOK:
+			{
+				s = operation + ":" + getNicks();
+				break;
+			}case DirMessageOps.OPERATION_SEARCH:
+			{
+				s = operation + ":" + getNickname();
+				break;
+			}case DirMessageOps.OPERATION_SEARCHOK:
 			{
 				s = operation + ":" + getNicks();
 				break;
