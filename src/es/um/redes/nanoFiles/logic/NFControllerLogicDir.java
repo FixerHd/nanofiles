@@ -88,13 +88,7 @@ public class NFControllerLogicDir {
 		 * identificarse. Devolver éxito/fracaso de la operación.
 		 */
 		boolean result = false;
-		if( directoryConnector == null){
-			System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
-			return result;
-		}
 		result = directoryConnector.logoutFromDirectory();
-
-		directoryConnector = null;
 		return result;
 	}
 
@@ -108,10 +102,6 @@ public class NFControllerLogicDir {
 		 * e imprimirla por pantalla. Devolver éxito/fracaso de la operación.
 		 */
 		boolean result = false;
-		if( directoryConnector == null){
-			System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
-			return result;
-		}
 		String[] array = directoryConnector.getUserList();
 		if(array == null) {
 			return result;
@@ -140,10 +130,6 @@ public class NFControllerLogicDir {
 		 */
 		
 		boolean result = false;
-		if( directoryConnector == null){
-			System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
-			return result;
-		}
 		FileInfo[] array = directoryConnector.getFileList();
 		if(array == null) {
 			return result;
@@ -174,10 +160,6 @@ public class NFControllerLogicDir {
 		 * éxito/fracaso de la operación.
 		 */
 		boolean result = false;
-		if( directoryConnector == null){
-			System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
-			return result;
-		}
 		result = directoryConnector.registerServerPort(serverPort);	
 	
 		return result;
@@ -198,10 +180,6 @@ public class NFControllerLogicDir {
 		 * operación.
 		 */
 		boolean result = false;
-		if( directoryConnector == null){
-			System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
-			return result;
-		}
 		FileInfo[] ficheros = NanoFiles.db.getFiles();
 		result = directoryConnector.publishLocalFiles(ficheros);	
 	
@@ -226,10 +204,6 @@ public class NFControllerLogicDir {
 		 * IP:puerto válidos), se debe devolver null.
 		 */
 		InetSocketAddress serverAddr = null;
-		if( directoryConnector == null){
-			System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
-			return serverAddr;
-		}
 	    serverAddr = directoryConnector.lookupServerAddrByUsername(nickname);
 		return serverAddr;
 	}

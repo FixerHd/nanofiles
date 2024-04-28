@@ -92,7 +92,8 @@ public class NFController {
 		boolean commandSucceeded = false;
 		switch (currentCommand) {
 		case NFCommands.COM_MYFILES:
-			showMyLocalFiles(); // Muestra los ficheros en el directorio local compartido
+			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			else showMyLocalFiles(); // Muestra los ficheros en el directorio local compartido
 			break;
 		case NFCommands.COM_LOGIN:
 			if (NanoFiles.testMode) {
@@ -109,21 +110,31 @@ public class NFController {
 			 * Pedir al controllerDir que "inicie sesión" en el directorio, para comprobar
 			 * que está activo y disponible, y registrar un nombre de usuario.
 			 */
-			commandSucceeded = controllerDir.doLogin(directory, nickname);
+			if(currentState != LOGGED_OUT) System.err.println("ERROR, el usuario ya está logeado en el directorio");
+			else {
+				commandSucceeded = controllerDir.doLogin(directory, nickname);
+				if(commandSucceeded) currentState = LOGGED_IN;
+			}
 			break;
 		case NFCommands.COM_LOGOUT:
 			/*
 			 * Pedir al controllerDir que "cierre sesión" en el directorio para dar de baja
 			 * el nombre de usuario registrado (método doLogout).
 			 */
-			commandSucceeded = controllerDir.doLogout();
+			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			else {
+				commandSucceeded = controllerDir.doLogout();
+				if(commandSucceeded) currentState = LOGGED_OUT;
+			}
+			
 			break;
 		case NFCommands.COM_USERLIST:
 			/*
 			 * Pedir al controllerDir que obtenga del directorio la lista de nicknames
 			 * registrados, y la muestre por pantalla (método getAndPrintUserList)
 			 */
-			commandSucceeded = controllerDir.getAndPrintUserList();
+			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			else commandSucceeded = controllerDir.getAndPrintUserList();
 			break;
 		case NFCommands.COM_FILELIST:
 			/*
@@ -131,14 +142,15 @@ public class NFController {
 			 * hay publicados (los ficheros que otros peers están sirviendo), y la imprima
 			 * por pantalla (método getAndPrintFileList)
 			 */
-			commandSucceeded = controllerDir.getAndPrintFileList();
+			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			else commandSucceeded = controllerDir.getAndPrintFileList();
 			break;
 		case NFCommands.COM_FGSERVE:
 			/*
 			 * Pedir al controllerPeer que lance un servidor de ficheros en primer plano
 			 * (método foregroundServeFiles). Este método no retorna...
 			 */
-			if(controllerDir.isnotLogged()) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
 			else controllerPeer.foregroundServeFiles(controllerDir);
 			break;
 		case NFCommands.COM_PUBLISH:
@@ -147,7 +159,8 @@ public class NFController {
 			 * ficheros disponibles (NanoFiles.db) para ser descargados desde otros peers
 			 * (método publishLocalFiles)
 			 */
-			commandSucceeded = controllerDir.publishLocalFiles();
+			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			else commandSucceeded = controllerDir.publishLocalFiles();
 			break;
 		case NFCommands.COM_BGSERVE:
 			/*
@@ -169,8 +182,10 @@ public class NFController {
 			 * solicite al directorio darnos de baja como servidor de ficheros (método
 			 * unregisterFileServer).
 			 */
-			controllerPeer.stopBackgroundFileServer();
+			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			else {controllerPeer.stopBackgroundFileServer();
 			commandSucceeded = controllerDir.unregisterFileServer();
+			}
 			break;
 		case NFCommands.COM_DOWNLOADFROM:
 			/*
@@ -183,7 +198,7 @@ public class NFController {
 			 * al comando) y lo guarde con el nombre indicado en downloadLocalFileName (3er
 			 * argumento)
 			 */
-			if(controllerDir.isnotLogged()) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
 			else {
 				InetSocketAddress serverAddr = controllerDir.getServerAddress(downloadTargetServer);
 			
@@ -197,7 +212,8 @@ public class NFController {
 			 * que tienen disponible el fichero identificado por dicho hash (puede ser una
 			 * subcadena del hash o el hash completo)
 			 */
-			commandSucceeded = controllerDir.getAndPrintServersNicknamesSharingThisFile(downloadTargetFileHash);
+			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			else commandSucceeded = controllerDir.getAndPrintServersNicknamesSharingThisFile(downloadTargetFileHash);
 			break;
 		case NFCommands.COM_DOWNLOAD:
 			/*
@@ -208,10 +224,13 @@ public class NFController {
 			 * servidores obtenidos, y lo guarde con el nombre indicado en
 			 * downloadLocalFileName (2º argumento)
 			 */
+			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
+			else {
 			LinkedList<InetSocketAddress> serverAddressList = controllerDir
 					.getServerAddressesSharingThisFile(downloadTargetFileHash);
 			commandSucceeded = controllerPeer.downloadFileFromMultipleServers(serverAddressList, downloadTargetFileHash,
 					downloadLocalFileName);
+			}
 			break;
 		case NFCommands.COM_QUIT:
 		default:
