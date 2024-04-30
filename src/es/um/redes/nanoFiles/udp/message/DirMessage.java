@@ -47,6 +47,9 @@ public class DirMessage {
 	
 	private String nicks;
 	
+	private String server;
+	
+	
 	
 
 
@@ -94,6 +97,21 @@ public class DirMessage {
 
 		return  Integer.toString(sessionkey);
 	}
+	
+	public void setServer(String num) {
+
+
+
+		server = num;
+	}
+	
+	public String getServer() {
+
+
+		return server;
+	}
+	
+	
 
 
 
@@ -166,7 +184,21 @@ public class DirMessage {
 				}case DirMessageOps.OPERATION_LOOKUP:
 				{
 					m = new DirMessage(field);
-					m.setNickname(value);
+					String[] partes = value.split(":");
+					m.setNickname(partes[0]);
+					if(partes.length==2) {
+						m.setServer(partes[1]);
+					}
+					break;
+				}
+				case DirMessageOps.OPERATION_LOOKUPOK:
+				{
+					m = new DirMessage(field);
+					String[] partes = value.split(":");
+					m.setNickname(partes[0]);
+					if(partes.length==2) {
+						m.setServer(partes[1]);
+					}
 					break;
 				}case DirMessageOps.OPERATION_REGISTER:
 				{
@@ -288,7 +320,20 @@ public class DirMessage {
 				
 			}case DirMessageOps.OPERATION_LOOKUP:
 			{
-				s = operation + ":" + nickname;
+				if(server==null) {
+					s = operation + ":" + nickname;
+					break;
+				}
+				s = operation + ":" + nickname + ":" + server;
+				break;
+				
+			}case DirMessageOps.OPERATION_LOOKUPOK:
+			{
+				if(server==null) {
+					s = operation + ":" + nickname;
+					break;
+				}
+				s = operation + ":" + nickname + ":" + server;
 				break;
 				
 			}case DirMessageOps.OPERATION_REGISTER:

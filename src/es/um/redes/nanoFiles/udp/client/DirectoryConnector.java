@@ -367,8 +367,15 @@ public class DirectoryConnector {
 		InetSocketAddress serverAddr = null;
 
 	    // Construir y enviar la solicitud de búsqueda al directorio
-	    String lookupRequest = "lookup:" + nick; // Construye el mensaje de búsqueda
-	    byte[] requestData = lookupRequest.getBytes(); // Convierte el mensaje en bytes
+		DirMessage lookupRequest = null;
+		String[] partes = this.directoryAddress.toString().split(":");
+		if(partes[0].contains("localhost")) {
+			lookupRequest = DirMessage.fromString(DirMessageOps.OPERATION_LOOKUP + ":" + nick + ":");	
+		} else {
+			lookupRequest = DirMessage.fromString(DirMessageOps.OPERATION_LOOKUP + ":" + nick + ":" + partes[0]);
+		}
+	    String cadena = lookupRequest.toString();
+	    byte[] requestData = cadena.getBytes(); // Convierte el mensaje en bytes
 
 	    // Envía la solicitud al directorio y recibe la respuesta
 	    byte[] responseData = null;
@@ -387,6 +394,11 @@ public class DirectoryConnector {
             	String ip = parts[1];
                 int port = Integer.parseInt(parts[2]);
                 try {
+                	if(ip.contains("unresolved")) {
+                		String[] ips = ip.split("<");
+                		ip = ips[0].substring(0, ips[0].length() - 1);
+                		
+                	}
                 	InetAddress inetAddress = InetAddress.getByName(ip.substring(1));
                     serverAddr = new InetSocketAddress(inetAddress, port);
 				} catch (UnknownHostException e) {

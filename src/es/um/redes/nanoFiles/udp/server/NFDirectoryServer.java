@@ -309,7 +309,17 @@ public class NFDirectoryServer {
 			break;
 		}case DirMessageOps.OPERATION_LOOKUP: {
 			String nickname = msg.getNickname();
-			response = DirMessage.fromString(DirMessageOps.OPERATION_LOOKUP + ":" + IPpuertos.get(nickname));
+			String server = msg.getServer();
+			if(server==null) {
+				response = DirMessage.fromString(DirMessageOps.OPERATION_LOOKUPOK +
+						":" + IPpuertos.get(nickname) + ":" + "");
+			}else {
+				InetSocketAddress aux = new InetSocketAddress(server, IPpuertos.get(nickname).getPort());
+				response = DirMessage.fromString(DirMessageOps.OPERATION_LOOKUP +
+						":" + aux + ":" + "");	
+			}
+			
+			
 			break;
 		}case DirMessageOps.OPERATION_REGISTER: {
 			String nickname = msg.getNickname();
