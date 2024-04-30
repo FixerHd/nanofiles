@@ -190,16 +190,6 @@ public class DirMessage {
 						m.setServer(partes[1]);
 					}
 					break;
-				}
-				case DirMessageOps.OPERATION_LOOKUPOK:
-				{
-					m = new DirMessage(field);
-					String[] partes = value.split(":");
-					m.setNickname(partes[0]);
-					if(partes.length==2) {
-						m.setServer(partes[1]);
-					}
-					break;
 				}case DirMessageOps.OPERATION_REGISTER:
 				{
 					m = new DirMessage(field);
@@ -319,15 +309,6 @@ public class DirMessage {
 				break;
 				
 			}case DirMessageOps.OPERATION_LOOKUP:
-			{
-				if(server==null) {
-					s = operation + ":" + nickname;
-					break;
-				}
-				s = operation + ":" + nickname + ":" + server;
-				break;
-				
-			}case DirMessageOps.OPERATION_LOOKUPOK:
 			{
 				if(server==null) {
 					s = operation + ":" + nickname;

@@ -94,8 +94,7 @@ public class NFController {
 		boolean commandSucceeded = false;
 		switch (currentCommand) {
 		case NFCommands.COM_MYFILES:
-			if(currentState != LOGGED_IN) System.err.println("ERROR, el usuario tiene que hacer el login antes de hacer cualquier operación");
-			else showMyLocalFiles(); // Muestra los ficheros en el directorio local compartido
+			showMyLocalFiles(); // Muestra los ficheros en el directorio local compartido
 			break;
 		case NFCommands.COM_LOGIN:
 			if (NanoFiles.testMode) {
@@ -114,7 +113,6 @@ public class NFController {
 			 */
 			
 			commandSucceeded = controllerDir.doLogin(directory, nickname);
-			if(commandSucceeded) currentState = LOGGED_IN;
 			break;
 		case NFCommands.COM_LOGOUT:
 			/*
@@ -123,9 +121,6 @@ public class NFController {
 			 */
 			
 			commandSucceeded = controllerDir.doLogout();
-			if(commandSucceeded) currentState = LOGGED_OUT;
-			
-			
 			break;
 		case NFCommands.COM_USERLIST:
 			/*
@@ -383,13 +378,6 @@ public class NFController {
 			currentState = DOWNLOADING_FROM;
 			break;
 		}
-
-		case NFCommands.COM_MYFILES: {
-			currentState = LOGGED_IN;
-			break;
-		}
-
-
 
 		default:
 		}

@@ -311,7 +311,7 @@ public class NFDirectoryServer {
 			String nickname = msg.getNickname();
 			String server = msg.getServer();
 			if(server==null) {
-				response = DirMessage.fromString(DirMessageOps.OPERATION_LOOKUPOK +
+				response = DirMessage.fromString(DirMessageOps.OPERATION_LOOKUP +
 						":" + IPpuertos.get(nickname) + ":" + "");
 			}else {
 				InetSocketAddress aux = new InetSocketAddress(server, IPpuertos.get(nickname).getPort());

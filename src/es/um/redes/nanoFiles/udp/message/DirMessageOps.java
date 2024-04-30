@@ -16,7 +16,6 @@ public class DirMessageOps {
 	public static final String OPERATION_USERLIST_FAILED = "userlist_failed";
 	public static final String OPERATION_LOGOUTOK = "logoutok";
 	public static final String OPERATION_LOOKUP = "lookup";
-	public static final String OPERATION_LOOKUPOK = "lookupok";
 	public static final String OPERATION_REGISTER = "register";
 	public static final String OPERATION_REGISTEROK = "registerok";
 	public static final String OPERATION_UNREGISTER = "unregister";
