@@ -1,11 +1,5 @@
 package es.um.redes.nanoFiles.udp.message;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
-import java.util.LinkedList;
-
-import es.um.redes.nanoFiles.util.FileInfo;
 
 /**
  * Clase que modela los mensajes del protocolo de comunicación entre pares para
@@ -26,21 +20,11 @@ public class DirMessage {
 	 * Nombre del campo que define el tipo de mensaje (primera línea)
 	 */
 	private static final String FIELDNAME_OPERATION = "operation";
-	/*
-	 * TODO: Definir de manera simbólica los nombres de todos los campos que pueden
-	 * aparecer en los mensajes de este protocolo (formato campo:valor)
-	 */
-
-
-
 	/**
 	 * Tipo del mensaje, de entre los tipos definidos en PeerMessageOps.
 	 */
 	private String operation = DirMessageOps.OPERATION_INVALID;
-	/*
-	 * TODO: Crear un atributo correspondiente a cada uno de los campos de los
-	 * diferentes mensajes de este protocolo.
-	 */
+
 	private String nickname;
 	
 	private int sessionkey;
@@ -57,14 +41,6 @@ public class DirMessage {
 	public DirMessage(String op) {
 		operation = op;
 	}
-
-
-
-
-	/*
-	 * TODO: Crear diferentes constructores adecuados para construir mensajes de
-	 * diferentes tipos con sus correspondientes argumentos (campos del mensaje)
-	 */
 
 	public String getOperation() {
 		return operation;
@@ -125,12 +101,7 @@ public class DirMessage {
 	 *         etc.)
 	 */
 	public static DirMessage fromString(String message) {
-		/*
-		 * TODO: Usar un bucle para parsear el mensaje línea a línea, extrayendo para
-		 * cada línea el nombre del campo y el valor, usando el delimitador DELIMITER, y
-		 * guardarlo en variables locales.
-		 */
-
+	
 		DirMessage m = null;
 		int idx = message.indexOf(DELIMITER); // Posición del delimitador
 		String field = message.substring(0, idx).toLowerCase(); // minúsculas;
@@ -261,11 +232,6 @@ public class DirMessage {
 
 		StringBuffer sb = new StringBuffer();
 		
-		/*
-		 * TODO: En función del tipo de mensaje, crear una cadena con el tipo y
-		 * concatenar el resto de campos necesarios usando los valores de los atributos
-		 * del objeto.
-		 */
 		String s = null;
 		switch(operation) {
 			case DirMessageOps.OPERATION_LOGIN:

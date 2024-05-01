@@ -5,11 +5,9 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
 import es.um.redes.nanoFiles.tcp.message.PeerMessage;
@@ -29,17 +27,6 @@ public class NFConnector {
 
 	public NFConnector(InetSocketAddress fserverAddr) throws UnknownHostException, IOException {
 		serverAddr = fserverAddr;
-		/*
-		 * TODO Se crea el socket a partir de la dirección del servidor (IP, puerto). La
-		 * creación exitosa del socket significa que la conexión TCP ha sido
-		 * establecida.
-		 */
-		/*
-		 * TODO Se crean los DataInputStream/DataOutputStream a partir de los streams de
-		 * entrada/salida del socket creado. Se usarán para enviar (dos) y recibir (dis)
-		 * datos del servidor.
-		 */
-		
 		// Crear el socket utilizando la dirección del servidor (IP, puerto)
         socket = new Socket(serverAddr.getAddress(), serverAddr.getPort());
         
@@ -64,39 +51,6 @@ public class NFConnector {
 	 * @throws IOException Si se produce algún error al leer/escribir del socket.
 	 */
 	public boolean downloadFile(String targetFileHashSubstr, File file) throws IOException {
-		/*
-		 * TODO: Construir objetos PeerMessage que modelen mensajes con los valores
-		 * adecuados en sus campos (atributos), según el protocolo diseñado, y enviarlos
-		 * al servidor a través del "dos" del socket mediante el método
-		 * writeMessageToOutputStream.
-		 */
-		/*
-		 * TODO: Recibir mensajes del servidor a través del "dis" del socket usando
-		 * PeerMessage.readMessageFromInputStream, y actuar en función del tipo de
-		 * mensaje recibido, extrayendo los valores necesarios de los atributos del
-		 * objeto (valores de los campos del mensaje).
-		 */
-		/*
-		 * TODO: Para escribir datos de un fichero recibidos en un mensaje, se puede
-		 * crear un FileOutputStream a partir del parámetro "file" para escribir cada
-		 * fragmento recibido (array de bytes) en el fichero mediante el método "write".
-		 * Cerrar el FileOutputStream una vez se han escrito todos los fragmentos.
-		 */
-		/*
-		 * NOTA: Hay que tener en cuenta que puede que la subcadena del hash pasada como
-		 * parámetro no identifique unívocamente ningún fichero disponible en el
-		 * servidor (porque no concuerde o porque haya más de un fichero coincidente con
-		 * dicha subcadena)
-		 */
-
-		/*
-		 * TODO: Finalmente, comprobar la integridad del fichero creado para comprobar
-		 * que es idéntico al original, calculando el hash a partir de su contenido con
-		 * FileDigest.computeFileChecksumString y comparándolo con el hash completo del
-		 * fichero solicitado. Para ello, es necesario obtener del servidor el hash
-		 * completo del fichero descargado, ya que quizás únicamente obtuvimos una
-		 * subcadena del mismo como parámetro.
-		 */
 		
 		boolean downloaded = false;
 		String hash = null;

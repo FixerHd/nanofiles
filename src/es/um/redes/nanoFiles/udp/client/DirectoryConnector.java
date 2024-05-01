@@ -5,7 +5,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import es.um.redes.nanoFiles.udp.message.DirMessage;
@@ -49,20 +48,11 @@ public class DirectoryConnector {
 	private InetSocketAddress directoryAddress;
 
 	private int sessionKey = INVALID_SESSION_KEY;
-	private boolean successfulResponseStatus;
-	private String errorDescription;
 
 	public DirectoryConnector(String address) throws IOException {	
-		/*
-		 * TODO: Convertir el nombre de host 'address' a InetAddress y guardar la
-		 * dirección de socket (address:DIRECTORY_PORT) del directorio en el atributo
-		 * directoryAddress, para poder enviar datagramas a dicho destino.
-		 */
-		 directoryAddress=new InetSocketAddress(InetAddress.getByName(address), DIRECTORY_PORT);		
-		/*
-		 * TODO: Crea el socket UDP en cualquier puerto para enviar datagramas al
-		 * directorio
-		 */
+		
+		directoryAddress=new InetSocketAddress(InetAddress.getByName(address), DIRECTORY_PORT);		
+		
 		socket=new DatagramSocket();
 	}
 
@@ -89,12 +79,7 @@ public class DirectoryConnector {
 					"DirectoryConnector.sendAndReceiveDatagrams: make sure constructor initializes field \"socket\"");
 			System.exit(-1);
 		}
-		/*
-		 * TODO: Enviar datos en un datagrama al directorio y recibir una respuesta. El
-		 * array devuelto debe contener únicamente los datos recibidos, *NO* el búfer de
-		 * recepción al completo.
-		 */
-		//InetSocketAddress addr = new InetSocketAddress(DIRECTORY_PORT);
+		
 		DatagramPacket packet = new DatagramPacket(requestData, requestData.length, directoryAddress);
 		socket.send(packet);
 		int intentos = 0;
@@ -112,20 +97,6 @@ public class DirectoryConnector {
 			}
 		}
 
-		/*
-		 * TODO: Las excepciones que puedan lanzarse al leer/escribir en el socket deben
-		 * ser capturadas y tratadas en este método. Si se produce una excepción de
-		 * entrada/salida (error del que no es posible recuperarse), se debe informar y
-		 * terminar el programa.
-		 */
-
-		/*
-		 * NOTA: Las excepciones deben tratarse de la más concreta a la más genérica.
-		 * SocketTimeoutException es más concreta que IOException.
-		 */
-
-
-
 		if (response != null && response.length == responseData.length) {
 			System.err.println("Your response is as large as the datagram reception buffer!!\n"
 					+ "You must extract from the buffer only the bytes that belong to the datagram!");
@@ -140,12 +111,7 @@ public class DirectoryConnector {
 	 * @return verdadero si se ha enviado un datagrama y recibido una respuesta
 	 */
 	public boolean testSendAndReceive() {
-		/*
-		 * TODO: Probar el correcto funcionamiento de sendAndReceiveDatagrams. Se debe
-		 * enviar un datagrama con la cadena "login" y comprobar que la respuesta
-		 * recibida es "loginok". En tal caso, devuelve verdadero, falso si la respuesta
-		 * no contiene los datos esperados.
-		 */
+	
 		boolean success = false;
 		String mensaje = "login";
 		byte[] datos = mensaje.getBytes();
@@ -187,18 +153,7 @@ public class DirectoryConnector {
 	 */
 	public boolean logIntoDirectory(String nickname) {
 		assert (sessionKey == INVALID_SESSION_KEY);
-		boolean success = false;
-		// TODO: 1.Crear el mensaje a enviar (objeto DirMessage) con atributos adecuados
-		// (operation, etc.) NOTA: Usar como operaciones las constantes definidas en la clase
-		// DirMessageOps
-		// TODO: 2.Convertir el objeto DirMessage a enviar a un string (método toString)
-		// TODO: 3.Crear un datagrama con los bytes en que se codifica la cadena
-		// TODO: 4.Enviar datagrama y recibir una respuesta (sendAndReceiveDatagrams).
-		// TODO: 5.Convertir respuesta recibida en un objeto DirMessage (método
-		// DirMessage.fromString)
-		// TODO: 6.Extraer datos del objeto DirMessage y procesarlos (p.ej., sessionKey)
-		// TODO: 7.Devolver éxito/fracaso de la operación
-		
+		boolean success = false;	
 		DirMessage msg = DirMessage.fromString(DirMessageOps.OPERATION_LOGIN + ":" + nickname);
 		String mensaje = msg.toString();
 		byte[] datos = mensaje.getBytes();
@@ -216,9 +171,6 @@ public class DirectoryConnector {
 		
 		String op = rcbd.getOperation();
 
-		/*if(!op.equals("loginok")) {
-			return success;
-		}*/
 		String val;
 		
 		if(op.equals("loginok") && recibidos!=null) {
@@ -245,7 +197,6 @@ public class DirectoryConnector {
 	public String[] getUserList() {
 		String[] userlist = null;
 		assert (sessionKey != INVALID_SESSION_KEY);
-		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
 		DirMessage msg = DirMessage.fromString(DirMessageOps.OPERATION_USERLIST + ":" + sessionKey);
 		String mensaje = msg.toString();
 		byte[] datos = mensaje.getBytes();
@@ -282,7 +233,6 @@ public class DirectoryConnector {
 	 * @return Verdadero si el directorio eliminó a este usuario exitosamente
 	 */
 	public boolean logoutFromDirectory() {
-		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
 		assert (sessionKey != INVALID_SESSION_KEY);
 		boolean success = false;
 		DirMessage msg = DirMessage.fromString(DirMessageOps.OPERATION_LOGOUT + ":" + sessionKey);
@@ -325,7 +275,6 @@ public class DirectoryConnector {
 	 *         servidor.
 	 */
 	public boolean registerServerPort(int serverPort) {
-		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
 		boolean success = false;
 		DirMessage msg = DirMessage.fromString(DirMessageOps.OPERATION_REGISTER + ":" + serverPort + "," + sessionKey);
 		String mensaje = msg.toString();
@@ -459,7 +408,6 @@ public class DirectoryConnector {
 			return success;
 
 		}
-		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
 		
 
 
@@ -477,9 +425,7 @@ public class DirectoryConnector {
 	 */
 	public FileInfo[] getFileList() {
 		FileInfo[] filelist = null;
-		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
 		assert (sessionKey != INVALID_SESSION_KEY);
-		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
 		DirMessage msg = DirMessage.fromString(DirMessageOps.OPERATION_FILELIST + ":" + sessionKey);
 		String mensaje = msg.toString();
 		byte[] datos = mensaje.getBytes();
@@ -526,9 +472,7 @@ public class DirectoryConnector {
 	 */
 	public String[] getServerNicknamesSharingThisFile(String fileHash) {
 		String[] nicklist = null;
-		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
 		assert (sessionKey != INVALID_SESSION_KEY);
-		// TODO: Ver TODOs en logIntoDirectory y seguir esquema similar
 		DirMessage msg = DirMessage.fromString(DirMessageOps.OPERATION_SEARCH + ":" + fileHash);
 		String mensaje = msg.toString();
 		byte[] datos = mensaje.getBytes();

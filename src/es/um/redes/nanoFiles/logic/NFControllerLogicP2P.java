@@ -1,12 +1,9 @@
 package es.um.redes.nanoFiles.logic;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.net.InetSocketAddress;
 import java.util.LinkedList;
-import java.util.Random;
 
 import es.um.redes.nanoFiles.tcp.client.NFConnector;
 import es.um.redes.nanoFiles.tcp.server.NFServer;
@@ -17,11 +14,6 @@ import es.um.redes.nanoFiles.tcp.server.NFServerSimple;
 
 
 public class NFControllerLogicP2P {
-	/*
-	 * TODO: Para bgserve, se necesita un atributo NFServer que actuará como
-	 * servidor de ficheros en segundo plano de este peer
-	 */
-	
 	
 	NFServer servidor;
 
@@ -42,14 +34,7 @@ public class NFControllerLogicP2P {
 	 */
 	
 	protected void foregroundServeFiles(NFControllerLogicDir controllerDir) {
-		/*
-		 * TODO: Crear objeto servidor NFServerSimple y ejecutarlo en primer plano.
-		 */
-		/*
-		 * TODO: Las excepciones que puedan lanzarse deben ser capturadas y tratadas en
-		 * este método. Si se produce una excepción de entrada/salida (error del que no
-		 * es posible recuperarse), se debe informar sin abortar el programa
-		 */
+		
 
 		try {
             NFServerSimple servidorSimple = new NFServerSimple();
@@ -70,21 +55,7 @@ public class NFControllerLogicP2P {
 	 * 
 	 */
 	protected boolean backgroundServeFiles() {
-		/*
-		 * TODO: Comprobar que no existe ya un objeto NFServer previamente creado, en
-		 * cuyo caso el servidor ya está en marcha. Si no lo está, crear objeto servidor
-		 * NFServer y arrancarlo en segundo plano creando un nuevo hilo. Finalmente,
-		 * comprobar que el servidor está escuchando en un puerto válido (>0) e imprimir
-		 * mensaje informando sobre el puerto, y devolver verdadero.
-		 */
-		/*
-		 * TODO: Las excepciones que puedan lanzarse deben ser capturadas y tratadas en
-		 * este método. Si se produce una excepción de entrada/salida (error del que no
-		 * es posible recuperarse), se debe informar sin abortar el programa
-		 */
-
-
-
+		
 		return false;
 	}
 
@@ -102,20 +73,7 @@ public class NFControllerLogicP2P {
 			System.err.println("* Cannot start download - No server address provided");
 			return false;
 		}
-		/*
-		 * TODO: Crear un objeto NFConnector para establecer la conexión con el peer
-		 * servidor de ficheros, y usarlo para descargar el fichero mediante su método
-		 * "downloadFile". Se debe comprobar previamente si ya existe un fichero con el
-		 * mismo nombre en esta máquina, en cuyo caso se informa y no se realiza la
-		 * descarga. Si todo va bien, imprimir mensaje informando de que se ha
-		 * completado la descarga.
-		 */
-		/*
-		 * TODO: Las excepciones que puedan lanzarse deben ser capturadas y tratadas en
-		 * este método. Si se produce una excepción de entrada/salida (error del que no
-		 * es posible recuperarse), se debe informar sin abortar el programa
-		 */
-		
+
 		File localFile = new File(localFileName);
 	    if (localFile.exists()) {
 	        System.out.println("El archivo ya existe en esta máquina, no se realizará la descarga.");
@@ -151,21 +109,6 @@ public class NFControllerLogicP2P {
 			System.err.println("* Cannot start download - No list of server addresses provided");
 			return false;
 		}
-		/*
-		 * TODO: Crear un objeto NFConnector para establecer la conexión con cada
-		 * servidor de ficheros, y usarlo para descargar un trozo (chunk) del fichero
-		 * mediante su método "downloadFileChunk". Se debe comprobar previamente si ya
-		 * existe un fichero con el mismo nombre en esta máquina, en cuyo caso se
-		 * informa y no se realiza la descarga. Si todo va bien, imprimir mensaje
-		 * informando de que se ha completado la descarga.
-		 */
-		/*
-		 * TODO: Las excepciones que puedan lanzarse deben ser capturadas y tratadas en
-		 * este método. Si se produce una excepción de entrada/salida (error del que no
-		 * es posible recuperarse), se debe informar sin abortar el programa
-		 */
-
-
 
 		return downloaded;
 	}
@@ -178,11 +121,6 @@ public class NFControllerLogicP2P {
 	 */
 	public int getServerPort() {
 		int port = 0;
-		/*
-		 * TODO: Devolver el puerto de escucha de nuestro servidor de ficheros en
-		 * segundo plano
-		 */
-
 
 
 		return port;
@@ -193,9 +131,7 @@ public class NFControllerLogicP2P {
 	 * 
 	 */
 	public void stopBackgroundFileServer() {
-		/*
-		 * TODO: Enviar señal para detener nuestro servidor de ficheros en segundo plano
-		 */
+		
 
 
 
